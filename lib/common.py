@@ -3,6 +3,15 @@ import os
 from lib.telegramLibrary import telegramLibrary
 from lib.czbookFetcher import czbookFetcher
 
+def getEverythingReady():
+    if not os.path.exists('src'):
+        os.mkdir('src')
+    if not os.path.exists('temp'):
+        os.mkdir('temp')
+    if not os.path.exists('src/sent.json'):
+        data={}
+        writeJson('src/sent',data)
+
 def loadJson(path):
     with open(f'{path}.json', encoding='utf-8') as f:
         data = json.load(f)
