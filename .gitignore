@@ -1,0 +1,5 @@
+.env
+src/
+test.py
+__pycache__/
+temp/
