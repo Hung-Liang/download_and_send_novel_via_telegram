@@ -46,33 +46,33 @@ class czbookFetcher():
     
     def mergeChap(self):
 
-        with open(f'src/{self.title}.txt','w',encoding='utf-8') as f:
+        with open(f'src/{self.title}.txt','a',encoding='utf-8') as f:
             for i in range(0,len(self.cList)):
                 f2=open(f"temp/{self.title}/{i+1}","r",encoding="utf-8")
                 f.write(f2.read()+'\n\n\n\n\n')
                 f2.close()
                 os.remove(f'temp/{self.title}/{i+1}')
 
-    def downloader(self,bot=None,cid=None):
+    def downloader(self,bot=None,cid=None,startPoint=1):
         
         chapterLen=len(self.cList)
 
-        counter=1
-        if bot!=None:
-            msg = bot.message.reply_text(f'Novel {self.title} Not Download Before, Downloading 0 / {chapterLen}....')
+        counter=startPoint
 
-        for chap in self.cList:
-            self.getChapter(chap,counter)
+        if bot!=None:
+            msg = bot.message.reply_text(f'「 {self.title} 」開始下載')
+
+        for i in range(counter-1,len(self.cList)):
+            self.getChapter(self.cList[i],counter)
             
             if msg!=None:
-                msg.edit_text(f'Novel {self.title} Not Download Before, Downloading {counter} / {chapterLen}....')
+                msg.edit_text(f'「 {self.title} 」開始下載, {counter} / {chapterLen}....')
 
             counter+=1
-        
-        msg.edit_text(f'{self.title} Download Success! Total Chapter {chapterLen}')
-        bot.message.reply_text('Sending File Now...')
 
-        self.mergeChap()
+        self.mergeChap()        
+        msg.edit_text(f'「 {self.title} 」下載成功，總章節{chapterLen}，現在開始傳送檔案...')
+
 
 
 

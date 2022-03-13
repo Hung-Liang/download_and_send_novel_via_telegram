@@ -1,5 +1,6 @@
 import json
 import os
+from turtle import down
 from lib.telegramLibrary import telegramLibrary
 from lib.czbookFetcher import czbookFetcher
 
@@ -24,12 +25,11 @@ def writeJson(path,data):
 def findFid(res):
     return res['result']['document']['file_id']
 
-def updateFid(title,res):
-    fid={'fid':findFid(res)}
+def updateFid(title,res,length):
+    fid={'fid':findFid(res),'length':str(length)}
     data=loadJson('src/sent')
     data[title]=fid
     writeJson('src/sent',data)
-    os.remove(f'src/{title}.txt')
     removeDirectory(title)
 
 def createDirectory(title):
@@ -43,12 +43,16 @@ def sendFileHandler(cid,url,bot=None):
     data=loadJson('src/sent')
     downloader=czbookFetcher(url)
     title=downloader.title
+    length=len(downloader.cList)
 
     if title in data:
-        if bot != None:
-            bot.message.reply_text('Novel Download Before, Send File Now!')
-        tele.sendDocumentByFileId(cid,data[title]['fid'])
+        if data[title]['length']==str(length):
+            if bot != None:
+                bot.message.reply_text(f'「 {title} 」曾經下載過且沒有更新，正在傳送檔案...')
+            tele.sendDocumentByFileId(cid,data[title]['fid'])
+        else:
+            downloader.downloader(bot,cid,int(data[title]['length']))
     else:
         createDirectory(downloader.title)
         downloader.downloader(bot,cid)
-        updateFid(title,tele.sendDocument(cid,title+'.txt'))
+        updateFid(title,tele.sendDocument(cid,title+'.txt'), length)
