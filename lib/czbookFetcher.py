@@ -1,6 +1,9 @@
 import requests
 from bs4 import BeautifulSoup
 import os
+import sys
+from functools import partial
+import multiprocessing
 
 class czbookFetcher():
 
@@ -15,8 +18,10 @@ class czbookFetcher():
 
     def fetch(self,url):
         headers={'User-Agent': "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/39.0.2171.95 Safari/537.36"}
-        resp=requests.get(url,headers=headers).text
-        return resp
+        resp=requests.get(url,headers=headers)
+        if resp.status_code!=200:
+            self.fetch(url)
+        return resp.text
 
     def getChapList(self,soup): #找出網頁的章節連結
         cList=[]
@@ -31,7 +36,7 @@ class czbookFetcher():
         return soup.find(classTag,className)
 
     def getChapter(self,url,counter):
-        soup=self.getSoup(self.urlPrefix + url)
+        soup=self.getSoup(self.urlPrefix + url[counter-1])
         chapName=self.findElement(soup,'div','name').text.replace(self.title,'').replace('《》','')
         content=self.findElement(soup,'div','content').text
         self.makeChapterFile(counter,chapName,content)
@@ -44,14 +49,14 @@ class czbookFetcher():
                 if line != '':
                     f.write('       '+line.strip()+'\n\n')
     
-    def mergeChap(self):
+    def mergeChap(self,startPoint):
 
         with open(f'src/{self.title}.txt','a',encoding='utf-8') as f:
-            for i in range(0,len(self.cList)):
-                f2=open(f"temp/{self.title}/{i+1}","r",encoding="utf-8")
+            for i in range(startPoint,len(self.cList)+1):
+                f2=open(f"temp/{self.title}/{i}","r",encoding="utf-8")
                 f.write(f2.read()+'\n\n\n\n\n')
                 f2.close()
-                os.remove(f'temp/{self.title}/{i+1}')
+                os.remove(f'temp/{self.title}/{i}')
 
     def downloader(self,bot=None,cid=None,startPoint=1):
         
@@ -70,11 +75,24 @@ class czbookFetcher():
 
             counter+=1
 
-        self.mergeChap()        
+        self.mergeChap(startPoint)        
         msg.edit_text(f'「 {self.title} 」下載成功，總章節{chapterLen}，現在開始傳送檔案...')
 
 
+if __name__ == '__main__':
 
+    downloader=czbookFetcher(sys.argv[1])
+    counter=sys.argv[2]
+    cid=sys.argv[3]
+
+    chapL=downloader.cList
+    title=downloader.title
+        
+    pool = multiprocessing.Pool()
+    pool.map(partial(downloader.getChapter,chapL), range(int(counter),len(chapL)+1))
+    pool.close()
+        
+    downloader.mergeChap(int(counter))
 
 
 	
