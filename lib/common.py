@@ -30,6 +30,13 @@ def updateFid(title,res):
     data[title]=fid
     writeJson('src/sent',data)
     os.remove(f'src/{title}.txt')
+    removeDirectory(title)
+
+def createDirectory(title):
+    os.mkdir(f'temp/{title}')
+
+def removeDirectory(title):
+    os.mkdir(f'temp/{title}')
 
 def sendFileHandler(cid,url,bot=None):
     tele=telegramLibrary()
@@ -42,5 +49,6 @@ def sendFileHandler(cid,url,bot=None):
             bot.message.reply_text('Novel Download Before, Send File Now!')
         tele.sendDocumentByFileId(cid,data[title]['fid'])
     else:
+        createDirectory(downloader.title)
         downloader.downloader(bot,cid)
         updateFid(title,tele.sendDocument(cid,title+'.txt'))

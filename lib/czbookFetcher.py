@@ -37,7 +37,7 @@ class czbookFetcher():
         self.makeChapterFile(counter,chapName,content)
     
     def makeChapterFile(self,counter,title,content):
-        with open(f'temp/{counter}','w',encoding='utf-8') as f:
+        with open(f'temp/{self.title}/{counter}','w',encoding='utf-8') as f:
             f.write(title+'\n\n\n\n')
             lines=content.splitlines()
             for line in lines: #排版
@@ -48,10 +48,10 @@ class czbookFetcher():
 
         with open(f'src/{self.title}.txt','w',encoding='utf-8') as f:
             for i in range(0,len(self.cList)):
-                f2=open(f"temp/{i+1}","r",encoding="utf-8")
+                f2=open(f"temp/{self.title}/{i+1}","r",encoding="utf-8")
                 f.write(f2.read()+'\n\n\n\n\n')
                 f2.close()
-                os.remove(f'temp/{i+1}')
+                os.remove(f'temp/{self.title}/{i+1}')
 
     def downloader(self,bot=None,cid=None):
         
