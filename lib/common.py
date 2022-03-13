@@ -36,7 +36,7 @@ def createDirectory(title):
     os.mkdir(f'temp/{title}')
 
 def removeDirectory(title):
-    os.remove(f'temp/{title}')
+    os.rmdir(f'temp/{title}')
 
 def sendFileHandler(cid,url,bot=None):
     tele=telegramLibrary()
