@@ -1,13 +1,15 @@
 import os
 from telegram.ext import Updater, CommandHandler
 from lib.common import sendFileHandler, getEverythingReady
+import threading
 from dotenv import load_dotenv
 load_dotenv()
 
 def download(bot, update):
     url=bot.message['text'].replace('/d ','')
     uid=bot.message.from_user.id
-    sendFileHandler(uid,url,bot)
+    th = threading.Thread(target=sendFileHandler, args=(uid,url,bot))
+    th.start()
 
 getEverythingReady()
 
