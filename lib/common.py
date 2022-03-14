@@ -33,6 +33,7 @@ def updateFid(title,res,length):
     data[title]=fid
     writeJson('src/sent',data)
     removeDirectory(title)
+    os.remove(f'src/{title}.txt')
 
 def createDirectory(title):
     os.mkdir(f'temp/{title}')
@@ -70,14 +71,11 @@ def sendFileHandler(cid,url,bot=None):
     title=downloader.title
     length=len(downloader.cList)
 
-    if title in data:
-        if data[title]['length']==str(length):
-            if bot != None:
-                bot.message.reply_text(f'「 {title} 」曾經下載過且沒有更新，正在傳送檔案...')
-            tele.sendDocumentByFileId(cid,data[title]['fid'])
-            return
-        else:
-            runFetcher(length-int(data[title]['length']),url,downloader.title,data[title]['length'],cid,bot)
+    if title in data and data[title]['length']==str(length):
+        if bot != None:
+            bot.message.reply_text(f'「 {title} 」曾經下載過且沒有更新，正在傳送檔案...')
+        tele.sendDocumentByFileId(cid,data[title]['fid'])
+        return
     else:
         runFetcher(length,url,downloader.title,1,cid,bot)
 
