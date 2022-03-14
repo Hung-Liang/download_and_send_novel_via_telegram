@@ -8,8 +8,7 @@ load_dotenv()
 def download(bot, update):
     url=bot.message['text'].replace('/d ','')
     uid=bot.message.from_user.id
-    th = threading.Thread(target=sendFileHandler, args=(uid,url,bot))
-    th.start()
+    sendFileHandler(uid,url,bot)
 
 getEverythingReady()
 
