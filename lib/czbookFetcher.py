@@ -58,27 +58,6 @@ class czbookFetcher():
                 f2.close()
                 os.remove(f'temp/{self.title}/{i}')
 
-    def downloader(self,bot=None,cid=None,startPoint=1):
-        
-        chapterLen=len(self.cList)
-
-        counter=startPoint
-
-        if bot!=None:
-            msg = bot.message.reply_text(f'「 {self.title} 」開始下載')
-
-        for i in range(counter-1,len(self.cList)):
-            self.getChapter(self.cList[i],counter)
-            
-            if msg!=None:
-                msg.edit_text(f'「 {self.title} 」開始下載, {counter} / {chapterLen}....')
-
-            counter+=1
-
-        self.mergeChap(startPoint)        
-        msg.edit_text(f'「 {self.title} 」下載成功，總章節{chapterLen}，現在開始傳送檔案...')
-
-
 if __name__ == '__main__':
 
     downloader=czbookFetcher(sys.argv[1])
