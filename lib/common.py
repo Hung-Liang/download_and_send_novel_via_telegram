@@ -55,6 +55,8 @@ def updater(title,bot,total):
         if origin<temp:
             msg.edit_text(f'「 {title} 」開始下載, {len(os.listdir(f"temp/{title}"))} / {total}....')
             origin=temp
+        else:
+            msg.edit_text(f'「 {title} 」開始下載, {total} / {total}....')
     
     msg.edit_text(f'「 {title} 」下載成功，總章節{total}，現在開始傳送檔案...')
 
