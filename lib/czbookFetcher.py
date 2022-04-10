@@ -61,17 +61,16 @@ class czbookFetcher():
 if __name__ == '__main__':
 
     downloader=czbookFetcher(sys.argv[1])
-    counter=sys.argv[2]
-    cid=sys.argv[3]
+    cid=sys.argv[2]
 
     chapL=downloader.cList
     title=downloader.title
         
     pool = multiprocessing.Pool()
-    pool.map(partial(downloader.getChapter,chapL), range(int(counter),len(chapL)+1))
+    pool.map(partial(downloader.getChapter,chapL), range(1,len(chapL)+1))
     pool.close()
         
-    downloader.mergeChap(int(counter))
+    downloader.mergeChap(1)
 
 
 	

@@ -60,10 +60,10 @@ def updater(title,bot,total):
     
     msg.edit_text(f'「 {title} 」下載成功，總章節{total}，現在開始傳送檔案...')
 
-def runFetcher(total,url,title,length,cid,bot):
+def runFetcher(total,url,title,cid,bot):
     tele=telegramLibrary()
     createDirectory(title)   
-    subprocess.Popen(['python','lib/czbookFetcher.py',url,str(length),str(cid)])
+    subprocess.Popen(['python','lib/czbookFetcher.py',url,str(cid)])
     updater(title,bot,total)
 
 def sendFileHandler(cid,url,bot=None):
@@ -71,14 +71,14 @@ def sendFileHandler(cid,url,bot=None):
     data=loadJson('src/sent')
     downloader=czbookFetcher(url)
     title=downloader.title
-    length=len(downloader.cList)
+    total=len(downloader.cList)
 
-    if title in data and data[title]['length']==str(length):
+    if title in data and data[title]['length']==str(total):
         if bot != None:
             bot.message.reply_text(f'「 {title} 」曾經下載過且沒有更新，正在傳送檔案...')
         tele.sendDocumentByFileId(cid,data[title]['fid'])
         return
     else:
-        runFetcher(length,url,downloader.title,1,cid,bot)
+        runFetcher(total,url,title,cid,bot)
 
-    updateFid(title,tele.sendDocument(cid,title+'.txt'), length)
+    updateFid(title,tele.sendDocument(cid,title+'.txt'), total)
