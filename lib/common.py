@@ -1,6 +1,5 @@
 import json
 import os
-from turtle import down
 from lib.telegramLibrary import telegramLibrary
 from lib.czbookFetcher import czbookFetcher
 import subprocess
@@ -43,22 +42,23 @@ def removeDirectory(title):
 
 def updater(title,bot,total):
     
-    msg = bot.message.reply_text(f'「 {title} 」開始下載, 0 / {total}....')
+    if bot != None:
+        msg = bot.message.reply_text(f'「 {title} 」開始下載, 0 / {total}....')
     while len(os.listdir(f'temp/{title}')) == 0:
         sleep(1)
     
     origin=0
-
+    finish=False
+    
     while len(os.listdir(f'temp/{title}')) != 0:
         sleep(2)
         temp=len(os.listdir(f'temp/{title}'))
         if origin<temp:
-            msg.edit_text(f'「 {title} 」開始下載, {len(os.listdir(f"temp/{title}"))} / {total}....')
+            if bot != None:
+                msg.edit_text(f'「 {title} 」開始下載, {len(os.listdir(f"temp/{title}"))} / {total}....')
             origin=temp
-        else:
-            msg.edit_text(f'「 {title} 」開始下載, {total} / {total}....')
-    
-    msg.edit_text(f'「 {title} 」下載成功，總章節{total}，現在開始傳送檔案...')
+    if bot != None:
+        msg.edit_text(f'「 {title} 」下載成功，總章節{total}，現在開始傳送檔案...')
 
 def runFetcher(total,url,title,cid,bot):
     tele=telegramLibrary()
