@@ -1,4 +1,3 @@
-from urllib import request
 import requests
 import os
 import json
@@ -16,7 +15,7 @@ class telegramLibrary():
 
     def sendDocument(self,cid,filename,path='src/'):
         files = {
-                "document": (filename,open(f'{path}{filename}','r',encoding='utf-8'), 'application/octet-stream'),
+                "document": (filename,open(f'{path}{filename}','rb'), 'application/octet-stream'),
                 }
         url = f'https://api.telegram.org/bot{self.token}/sendDocument?chat_id={cid}' 
         res=requests.post(url,files=files)
