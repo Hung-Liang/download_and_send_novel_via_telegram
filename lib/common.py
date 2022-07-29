@@ -33,12 +33,11 @@ def txt_to_epub(title):
                     f'src/{title}.epub',
                     ])
 
-def updateFid(title, txt_res, epub_res, length, url, author):
+def updateFid(title, txt_res, length, url, author):
     
     fid={'url': url,
          'author': author,
          'txt_fid': findFid(txt_res), 
-         'epub_fid': findFid(epub_res), 
          'length': str(length)}
     
     data=loadJson('src/sent')
@@ -46,7 +45,6 @@ def updateFid(title, txt_res, epub_res, length, url, author):
     writeJson('src/sent', data)
     removeDirectory(title)
     os.remove(f'src/{title}.txt')
-    os.remove(f'src/{title}.epub')
 
 def createDirectory(title):
     os.mkdir(f'temp/{title}')
@@ -58,6 +56,7 @@ def updater(title, bot, total):
     
     if bot != None:
         msg = bot.message.reply_text(f'「 {title} 」開始下載, 0 / {total}....')
+        print(f'「 {title} 」開始下載, 0 / {total}....')
     while len(os.listdir(f'temp/{title}')) == 0:
         sleep(1)
     
@@ -70,14 +69,16 @@ def updater(title, bot, total):
         if origin<temp:
             if bot != None:
                 msg.edit_text(f'「 {title} 」開始下載, {len(os.listdir(f"temp/{title}"))} / {total}....')
+                print(f'「 {title} 」開始下載, {len(os.listdir(f"temp/{title}"))} / {total}....')
             origin=temp
     if bot != None:
         msg.edit_text(f'「 {title} 」下載成功，總章節{total}，現在開始傳送檔案...')
+        print(f'「 {title} 」下載成功，總章節{total}，現在開始傳送檔案...')
 
 def runFetcher(total, url, title, cid, bot):
     tele=telegramLibrary()
     createDirectory(title)   
-    subprocess.Popen(['python3', 'lib/czbookFetcher.py', url, str(cid)])
+    subprocess.Popen(['python', 'lib/czbookFetcher.py', url, str(cid)])
     updater(title, bot, total)
 
 def sendFileHandler(cid, url, bot=None):
@@ -91,10 +92,11 @@ def sendFileHandler(cid, url, bot=None):
     if title in data and data[title]['length']==str(total):
         if bot != None:
             bot.message.reply_text(f'「 {title} 」曾經下載過且沒有更新，正在傳送檔案...')
+            print(f'「 {title} 」曾經下載過且沒有更新，正在傳送檔案...')
         tele.sendDocumentByFileId(cid, data[title]['txt_fid'])
-        tele.sendDocumentByFileId(cid, data[title]['epub_fid'])
         return
     else:
         runFetcher(total, url, title, cid, bot)
-        txt_to_epub(title)
-        updateFid(title, tele.sendDocument(cid, title+'.txt'), tele.sendDocument(cid, title+'.epub'), total, url, author)
+        
+        res = tele.sendDocument(cid, title+'.txt')
+        updateFid(title, res, total, url, author)
