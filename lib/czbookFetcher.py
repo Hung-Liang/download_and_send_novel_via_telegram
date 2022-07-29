@@ -14,6 +14,7 @@ class czbookFetcher():
     def getTitleAndChapter(self,url):
         soup=self.getSoup(url)
         self.title=self.findElement(soup,'span','title').text.strip().replace('》','').replace('《','')
+        self.author=self.findElement(soup,'span','author').a.text.strip()
         self.cList=self.getChapList(soup)
 
     def fetch(self,url):
@@ -43,7 +44,7 @@ class czbookFetcher():
     
     def makeChapterFile(self,counter,title,content):
         with open(f'temp/{self.title}/{counter}','w',encoding='utf-8') as f:
-            f.write(title+'\n\n\n\n')
+            f.write('# '+title+'\n\n\n\n')
             lines=content.splitlines()
             for line in lines: #排版
                 if line != '':
@@ -52,6 +53,10 @@ class czbookFetcher():
     def mergeChap(self,startPoint):
 
         with open(f'src/{self.title}.txt','a',encoding='utf-8') as f:
+            
+            f.write(f"% {self.title}"+'\n')
+            f.write(f"% {self.author}"+'\n\n\n')
+
             for i in range(startPoint,len(self.cList)+1):
                 f2=open(f"temp/{self.title}/{i}","r",encoding="utf-8")
                 f.write(f2.read()+'\n\n\n\n\n')
@@ -73,4 +78,5 @@ if __name__ == '__main__':
     downloader.mergeChap(1)
 
 
-	
+# d = czbookFetcher('https://czbooks.net/n/ai139fl')
+# print(d.author)

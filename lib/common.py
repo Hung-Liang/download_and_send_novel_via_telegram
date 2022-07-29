@@ -26,13 +26,27 @@ def writeJson(path, data):
 def findFid(res):
     return res['result']['document']['file_id']
 
-def updateFid(title, res, length):
-    fid={'fid':findFid(res), 'length':str(length)}
+def txt_to_epub(title):
+    subprocess.run(['pandoc',
+                    f'src/{title}.txt',
+                    f'-o',
+                    f'src/{title}.epub',
+                    ])
+
+def updateFid(title, txt_res, epub_res, length, url, author):
+    
+    fid={'url': url,
+         'author': author,
+         'txt_fid': findFid(txt_res), 
+         'epub_fid': findFid(epub_res), 
+         'length': str(length)}
+    
     data=loadJson('src/sent')
     data[title]=fid
     writeJson('src/sent', data)
     removeDirectory(title)
     os.remove(f'src/{title}.txt')
+    os.remove(f'src/{title}.epub')
 
 def createDirectory(title):
     os.mkdir(f'temp/{title}')
@@ -63,7 +77,7 @@ def updater(title, bot, total):
 def runFetcher(total, url, title, cid, bot):
     tele=telegramLibrary()
     createDirectory(title)   
-    subprocess.Popen(['python', 'lib/czbookFetcher.py', url, str(cid)])
+    subprocess.Popen(['python3', 'lib/czbookFetcher.py', url, str(cid)])
     updater(title, bot, total)
 
 def sendFileHandler(cid, url, bot=None):
@@ -72,13 +86,15 @@ def sendFileHandler(cid, url, bot=None):
     downloader=czbookFetcher(url)
     title=downloader.title
     total=len(downloader.cList)
+    author=downloader.author
 
     if title in data and data[title]['length']==str(total):
         if bot != None:
             bot.message.reply_text(f'「 {title} 」曾經下載過且沒有更新，正在傳送檔案...')
-        tele.sendDocumentByFileId(cid, data[title]['fid'])
+        tele.sendDocumentByFileId(cid, data[title]['txt_fid'])
+        tele.sendDocumentByFileId(cid, data[title]['epub_fid'])
         return
     else:
         runFetcher(total, url, title, cid, bot)
-
-    updateFid(title, tele.sendDocument(cid, title+'.txt'), total)
+        txt_to_epub(title)
+        updateFid(title, tele.sendDocument(cid, title+'.txt'), tele.sendDocument(cid, title+'.epub'), total, url, author)
