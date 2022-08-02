@@ -37,19 +37,29 @@ class czbookFetcher():
         return soup.find(classTag,className)
 
     def getChapter(self,url,counter):
+        
         soup=self.getSoup(self.urlPrefix + url[counter-1])
-        chapName=self.findElement(soup,'div','name').text.replace(self.title,'').replace('《》','')
-        content=self.findElement(soup,'div','content').text
+
+        if self.findElement(soup,'div','name') != None:   
+            chapName=self.findElement(soup,'div','name').text.replace(self.title,'').replace('《》','')
+        else:
+            chapName=f'第{counter}章'
+
+        if self.findElement(soup,'div','content') != None:
+            content=self.findElement(soup,'div','content').text
+        else:
+            content='\n\n'
+
         self.makeChapterFile(counter,chapName,content)
     
     def makeChapterFile(self,counter,title,content):
         with open(f'temp/{self.title}/{counter}','w',encoding='utf-8') as f:
-            f.write('# '+title+'\n\n\n\n')
+            # f.write('# '+title+'\n\n\n\n')
             lines=content.splitlines()
             for line in lines: #排版
                 if line != '':
                     f.write('       '+line.strip()+'\n\n')
-    
+
     def mergeChap(self,startPoint):
 
         with open(f'src/{self.title}.txt','a',encoding='utf-8') as f:
