@@ -4,6 +4,7 @@ import os
 import sys
 from functools import partial
 import multiprocessing
+import re
 
 class czbookFetcher():
 
@@ -54,11 +55,28 @@ class czbookFetcher():
     
     def makeChapterFile(self,counter,title,content):
         with open(f'temp/{self.title}/{counter}','w',encoding='utf-8') as f:
-            # f.write('# '+title+'\n\n\n\n')
-            lines=content.splitlines()
+            f.write('# '+title+'\n\n\n\n')
+        
+            lines=self.find_chap_in_content(content.splitlines())
+        
             for line in lines: #排版
                 if line != '':
-                    f.write('       '+line.strip()+'\n\n')
+                    if '# ' in line[0:2]:
+                        f.write(line.strip()+'\n\n')
+                    else:
+                        f.write('       '+line.strip()+'\n\n')
+
+    def find_chap_in_content(self, lines):
+        
+        temp = []
+
+        for line in lines:
+            a = re.match(r'(\s+|\n|)(第)([\u4e00-\u9fa5a-zA-Z0-9]{1,7})[章節卷集部篇回][^\n]{1,35}(|\n)', line)
+            if a != None:
+                temp.append('# '+line.strip())
+            else:
+                temp.append(line)
+        return temp
 
     def mergeChap(self,startPoint):
 
