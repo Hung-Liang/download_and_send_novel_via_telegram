@@ -1,5 +1,5 @@
 .env
-src/
-test.py
-__pycache__/
-temp/
+asset/
+log/
+test.*
+**/__pycache__/
