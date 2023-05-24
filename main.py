@@ -1,57 +1,70 @@
 import os
 from telegram.ext import Updater, CommandHandler
-from lib.common import sendFileHandler, getEverythingReady, find_book, send_all, get_books_name, remove_and_get_url
+from lib.common import (
+    sendFileHandler,
+    getEverythingReady,
+    find_book,
+    send_all,
+    get_books_name,
+    remove_and_get_url,
+)
 import threading
 from dotenv import load_dotenv
+
 load_dotenv()
 
+
 def download(bot, update):
-    url=bot.message['text'].replace('/d ','').strip()
-    uid=bot.message.from_user.id
-    sendFileHandler(uid,url,bot)
+    url = bot.message['text'].replace('/d ', '').strip()
+    uid = bot.message.from_user.id
+    sendFileHandler(uid, url, bot)
+
 
 def redownload(bot, update):
     uid = bot.message.from_user.id
-    msg = bot.message['text'].replace('/redownload ','').strip()
-    
+    msg = bot.message['text'].replace('/redownload ', '').strip()
+
     url = remove_and_get_url(bot, msg)
-    
+
     if url != None:
-        sendFileHandler(uid,url,bot)
+        sendFileHandler(uid, url, bot)
+
 
 def resend(bot, update):
     uid = bot.message.from_user.id
-    msg = bot.message['text'].replace('/resend ','').strip()
-    if msg != '/resend' :
+    msg = bot.message['text'].replace('/resend ', '').strip()
+    if msg != '/resend':
         find_book(bot, uid, msg)
     else:
         send_all(uid)
         bot.message.reply_text('重新傳送全部書本完畢')
+
 
 def books(bot, update):
     uid = bot.message.from_user.id
     bot.message.reply_text('以下為現有的書')
     get_books_name(uid)
 
+
 def help(bot, update):
     bot.message.reply_text(
-                            '/d 下載\n' \
-                            '/resend 重新傳送\n' \
-                            '/books 所有的書名\n' \
-                            '/redownload 重新下載\n' \
-                          )
+        '/d 下載\n/resend 重新傳送\n/books 所有的書名\n/redownload 重新下載\n'
+    )
+
 
 def shutdown():
     updater.stop()
     updater.is_idle = False
 
+
 def stop(bot, update):
-    uid=bot.message.from_user.id
-    if str(uid)==os.environ.get("admin_id"):
+    uid = bot.message.from_user.id
+    if str(uid) == os.environ.get("admin_id"):
         bot.message.reply_text('Bot Shutting Down')
         threading.Thread(target=shutdown).start()
     else:
         bot.message.reply_text('You do not have permission')
+
 
 getEverythingReady()
 
