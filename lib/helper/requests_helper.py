@@ -6,7 +6,7 @@ from lib.utils.logger import log
 def fetch(url: str, counter=0):
 
     if counter > 5:
-        raise Exception('Fetch ')
+        raise Exception('Fetch failed')
 
     headers = {
         'User-Agent': (
@@ -25,8 +25,13 @@ def fetch(url: str, counter=0):
         return res.text
 
 
-def get_soup(url):
-    return BeautifulSoup(fetch(url), 'lxml')
+def get_soup(url=None, response_text=None):
+    if response_text:
+        return BeautifulSoup(response_text, 'lxml')
+    elif url:
+        return BeautifulSoup(fetch(url), 'lxml')
+    else:
+        raise Exception('get_soup: url or response_text must be provided')
 
 
 def find_element(soup, class_tag, class_name):
