@@ -11,12 +11,12 @@ class TelegramHelper:
     """Telegram Helper
 
     Attributes:
-        token: Telegram Bot Token.
+        `token`: Telegram Bot Token.
 
     Functions:
-        send_message: Send message to Telegram.
-        send_document: Send document to Telegram.
-        send_document_by_fid: Send document by file id to Telegram.
+        `send_message`: Send message to Telegram.
+        `send_document`: Send document to Telegram.
+        `send_document_by_fid`: Send document by file id to Telegram.
     """
 
     def __init__(self):
@@ -26,8 +26,8 @@ class TelegramHelper:
         """Send message to Telegram.
 
         Args:
-            cid: Chat ID.
-            message: Message to send.
+            `cid`: Chat ID.
+            `message`: Message to send.
 
         Returns:
             True if success, False if fail.
@@ -56,9 +56,9 @@ class TelegramHelper:
         """Send document to Telegram.
 
         Args:
-            cid: Chat ID.
-            path: Path to file.
-            filename: Filename.
+            `cid`: Chat ID.
+            `path`: Path to file.
+            `filename`: Filename.
 
         Returns:
             True if success, False if fail.
@@ -90,8 +90,8 @@ class TelegramHelper:
         """Send document by file id to Telegram.
 
         Args:
-            cid: Chat ID.
-            fid: File ID.
+            `cid`: Chat ID.
+            `fid`: File ID.
 
         Returns:
             True if success, False if fail.
