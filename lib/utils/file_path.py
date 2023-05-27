@@ -10,7 +10,7 @@ ASSET_PATH = Path(PROGRAM_PATH, 'asset')
 CRAWLER_ROOT_PATH = Path(PROGRAM_PATH, 'lib', 'crawler')
 
 CZBOOKS_CRAWLER_PATH = Path(CRAWLER_ROOT_PATH, 'czbooks_crawler.py')
-
+UUTW_CRAWLER_PATH = Path(CRAWLER_ROOT_PATH, 'uutw_crawler.py')
 
 BOOKS_JSON_PATH = Path(ASSET_PATH, 'books.json')
 

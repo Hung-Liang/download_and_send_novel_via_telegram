@@ -23,7 +23,7 @@ def check_book(title, website, length):
         if book == title:
 
             if website in books[book]['websites']:
-                if books[book]['websites'][website]['length'] == length:
+                if int(books[book]['websites'][website]['length']) == length:
 
                     fid = books[book]['websites'][website]['fid']
                     return True, True, True, fid

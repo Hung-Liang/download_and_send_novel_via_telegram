@@ -67,7 +67,8 @@ def master_handler(cid, url: str, bot=None, redownload=False):
         if finished:
             if bot:
                 message.edit_text(
-                    "<b>{}</b>網站版本的<b>{}</b>下載完成，正在傳送".format(website, title)
+                    "<b>{}</b>網站版本的<b>{}</b>下載完成，正在傳送".format(website, title),
+                    parse_mode="HTML",
                 )
             break
         else:
