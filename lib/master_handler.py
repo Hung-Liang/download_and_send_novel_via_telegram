@@ -21,6 +21,7 @@ def master_handler(cid, url: str, bot=None, redownload=False):
 
     title = crawler.title
     author = crawler.author
+
     chapter_size = crawler.chapter_size
     destination_path = crawler.path
 
@@ -32,7 +33,7 @@ def master_handler(cid, url: str, bot=None, redownload=False):
 
     if redownload:
         bot_message = "重新下載<b>{}</b>網站版本的<b>{}</b>".format(website, title)
-        book_exist, website_exist, length_match = False, False, False
+        book_exist, website_exist, length_match = True, False, False
 
     else:
         bot_message = get_bot_message(
@@ -83,7 +84,9 @@ def master_handler(cid, url: str, bot=None, redownload=False):
                 except Exception:
                     pass
 
-    success, res = telegram_helper.send_document(cid, file_path, file_name)
+    success, res = telegram_helper.send_document(
+        cid, file_path, "[{}] {}".format(website, file_name)
+    )
 
     delete_dir(destination_path)
 

@@ -17,10 +17,10 @@ from lib.utils.file_path import OUTPUT_PATH
 from lib.tools.translate import translate_simp_to_trad
 
 
-class UutwCrawler:
+class HetubookCrawler:
     def __init__(self, url):
 
-        self.url_prefix = "https://tw.uukanshu.com"
+        self.url_prefix = "https://www.hetubook.com"
         self.soup = get_soup(url)
 
         self.title, self.author = translate_simp_to_trad(
@@ -34,21 +34,28 @@ class UutwCrawler:
     def get_title(self):
 
         self.title = (
-            find_element(self.soup, 'h2', '').text.strip().split('作者：')[0]
+            find_element(self.soup, 'div', 'book_info finish')
+            .find('h2')
+            .text.strip()
+            .replace('》', '')
+            .replace('《', '')
         )
 
         return self.title
 
     def get_author(self):
         self.author = (
-            find_element(self.soup, 'h2', '').text.strip().split('作者：')[1]
+            find_element(self.soup, 'div', 'book_info finish')
+            .find('div')
+            .text.strip()
+            .replace('作者：', '')
         )
         return self.author
 
     def get_total_pages(self):
 
         self.chapter_list = []
-        for t in self.soup.find('ul', id='chapterList').find_all('a'):
+        for t in self.soup.find('dl', id='dir').find_all('a'):
             self.chapter_list.append(self.url_prefix + t.get('href'))
 
         return self.chapter_list
@@ -60,18 +67,21 @@ class UutwCrawler:
 
         soup = get_soup(self.chapter_list[index])
 
-        if find_element(soup, 'div', 'h1title'):
-            chapter_name = (
-                find_element(soup, 'div', 'h1title')
-                .find('h1')
-                .text.replace(self.title, '')
-                .replace('《》', '')
-            )
+        if soup.find_all('h2'):
+
+            chapter_name = ""
+
+            for t in soup.find_all('h2'):
+                chapter_name += t.text.strip() + "\n\n"
+
         else:
             chapter_name = '第{}章'.format(index)
 
-        if soup.find('div', 'contentbox'):
-            content = soup.find('div', 'contentbox').text
+        if soup.find('div', id='content').find_all('div'):
+            content = ""
+            for t in soup.find('div', id='content').find_all('div'):
+                content += t.text.strip() + "\n\n"
+
         else:
             content = '\n\n'
 
@@ -80,7 +90,8 @@ class UutwCrawler:
 
 if __name__ == '__main__':
 
-    downloader = UutwCrawler(sys.argv[1])
+    downloader = HetubookCrawler(sys.argv[1])
+    # downloader = HetubookCrawler("https://www.hetubook.com/book/5/index.html")
 
     chapter_list = downloader.chapter_list
 

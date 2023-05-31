@@ -1,6 +1,7 @@
 from pathlib import Path
 import re
 from lib.tools.tools import delete_file
+from lib.tools.translate import translate_simp_to_trad
 
 
 def create_directory(path, title):
@@ -91,6 +92,8 @@ def merge_chapter(path, title, chapter_size):
     for i in range(chapter_size):
         with open(Path(path, str(i)), 'r', encoding='utf-8') as f:
             lines = f.readlines()
+
+        lines = translate_simp_to_trad(lines)
 
         with open(
             Path(path, "{}.txt".format(title)), 'a', encoding='utf-8'

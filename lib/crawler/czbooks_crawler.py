@@ -14,14 +14,19 @@ from lib.tools.crawler_helper import (
     merge_chapter,
 )
 from lib.utils.file_path import OUTPUT_PATH
+from lib.tools.translate import translate_simp_to_trad
 
 
 class CzbooksCrawler:
     def __init__(self, url):
 
+        self.url_prefix = "https:"
         self.soup = get_soup(url)
-        self.title = self.get_title()
-        self.author = self.get_author()
+
+        self.title, self.author = translate_simp_to_trad(
+            [self.get_title(), self.get_author()]
+        )
+
         self.chapter_list = self.get_total_pages()
         self.chapter_size = self.get_chapter_size()
         self.path = create_directory(OUTPUT_PATH, self.title)
@@ -47,7 +52,7 @@ class CzbooksCrawler:
         for t in find_element(self.soup, 'ul', 'nav chapter-list').find_all(
             'a'
         ):
-            self.chapter_list.append("https:" + t.get('href'))
+            self.chapter_list.append(self.url_prefix + t.get('href'))
 
         return self.chapter_list
 
