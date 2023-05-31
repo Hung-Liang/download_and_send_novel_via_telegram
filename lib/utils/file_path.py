@@ -12,6 +12,7 @@ CRAWLER_ROOT_PATH = Path(PROGRAM_PATH, 'lib', 'crawler')
 CZBOOKS_CRAWLER_PATH = Path(CRAWLER_ROOT_PATH, 'czbooks_crawler.py')
 UUTW_CRAWLER_PATH = Path(CRAWLER_ROOT_PATH, 'uutw_crawler.py')
 HETUBOOK_CRAWLER_PATH = Path(CRAWLER_ROOT_PATH, 'hetubook_crawler.py')
+ZHSXSTW_CRAWLER_PATH = Path(CRAWLER_ROOT_PATH, 'zhsxstw_crawler.py')
 
 BOOKS_JSON_PATH = Path(ASSET_PATH, 'books.json')
 

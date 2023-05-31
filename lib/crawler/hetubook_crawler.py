@@ -91,11 +91,8 @@ class HetubookCrawler:
 if __name__ == '__main__':
 
     downloader = HetubookCrawler(sys.argv[1])
-    # downloader = HetubookCrawler("https://www.hetubook.com/book/5/index.html")
 
     chapter_list = downloader.chapter_list
-
-    downloader.get_content(0)
 
     pool = multiprocessing.Pool()
     pool.map(

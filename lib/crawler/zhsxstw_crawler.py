@@ -7,7 +7,7 @@ project_path = os.path.dirname(
 sys.path.append(project_path)
 
 import multiprocessing
-from lib.helper.requests_helper import find_element, get_soup
+from lib.helper.requests_helper import get_soup
 from lib.tools.crawler_helper import (
     create_directory,
     make_chapter_file,
@@ -17,10 +17,13 @@ from lib.utils.file_path import OUTPUT_PATH
 from lib.tools.translate import translate_simp_to_trad
 
 
-class UutwCrawler:
+class ZhsxstwCrawler:
     def __init__(self, url):
 
-        self.url_prefix = "https://tw.uukanshu.com"
+        if "zhsbook" in url:
+            url = url.replace("zhsbook", "zhschapter")
+
+        self.url_prefix = "http://tw.zhsxs.com"
         self.soup = get_soup(url)
 
         self.title, self.author = translate_simp_to_trad(
@@ -34,22 +37,35 @@ class UutwCrawler:
     def get_title(self):
 
         self.title = (
-            find_element(self.soup, 'h2', '').text.strip().split('作者：')[0]
+            self.soup.find('td')
+            .find_all('a')[1]
+            .get('title')
+            .split(' ')[0]
+            .replace('《', '')
+            .replace('》', '')
         )
 
         return self.title
 
     def get_author(self):
         self.author = (
-            find_element(self.soup, 'h2', '').text.strip().split('作者：')[1]
+            self.soup.find('td')
+            .find_all('a')[1]
+            .get('title')
+            .split(' ')[1]
+            .replace('《', '')
+            .replace('》', '')
         )
+
         return self.author
 
     def get_total_pages(self):
 
         self.chapter_list = []
-        for t in self.soup.find('ul', id='chapterList').find_all('a'):
-            self.chapter_list.append(self.url_prefix + t.get('href'))
+
+        for t in self.soup.find_all('td', 'chapterlist'):
+            if t.a.get('href'):
+                self.chapter_list.append(self.url_prefix + t.a.get('href'))
 
         return self.chapter_list
 
@@ -60,18 +76,19 @@ class UutwCrawler:
 
         soup = get_soup(self.chapter_list[index])
 
-        if find_element(soup, 'div', 'h1title'):
+        if soup.find_all('td')[1].find('h1').text:
             chapter_name = (
-                find_element(soup, 'div', 'h1title')
+                soup.find_all('td')[1]
                 .find('h1')
                 .text.replace(self.title, '')
                 .replace('《》', '')
+                .strip()
             )
         else:
             chapter_name = '第{}章'.format(index)
 
-        if soup.find('div', 'contentbox'):
-            content = soup.find('div', 'contentbox').text
+        if soup.find_all('td')[1].find_all('div')[8].text:
+            content = soup.find_all('td')[1].find_all('div')[8].text
         else:
             content = '\n\n'
 
@@ -80,7 +97,7 @@ class UutwCrawler:
 
 if __name__ == '__main__':
 
-    downloader = UutwCrawler(sys.argv[1])
+    downloader = ZhsxstwCrawler(sys.argv[1])
 
     chapter_list = downloader.chapter_list
 

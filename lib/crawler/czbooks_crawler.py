@@ -86,8 +86,6 @@ if __name__ == '__main__':
 
     chapter_list = downloader.chapter_list
 
-    downloader.get_content(0)
-
     pool = multiprocessing.Pool()
     pool.map(
         downloader.get_content,
