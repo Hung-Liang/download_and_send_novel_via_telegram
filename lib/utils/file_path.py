@@ -14,6 +14,7 @@ UUTW_CRAWLER_PATH = Path(CRAWLER_ROOT_PATH, 'uutw_crawler.py')
 HETUBOOK_CRAWLER_PATH = Path(CRAWLER_ROOT_PATH, 'hetubook_crawler.py')
 ZHSXSTW_CRAWLER_PATH = Path(CRAWLER_ROOT_PATH, 'zhsxstw_crawler.py')
 STO_CRAWLER_PATH = Path(CRAWLER_ROOT_PATH, 'sto_crawler.py')
+NOVEL543_CRAWLER_PATH = Path(CRAWLER_ROOT_PATH, 'novel543_crawler.py')
 
 BOOKS_JSON_PATH = Path(ASSET_PATH, 'books.json')
 
