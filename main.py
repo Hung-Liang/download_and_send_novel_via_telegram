@@ -13,7 +13,7 @@ from lib.tools.tools import (
     separate_message_for_telegram_limit,
 )
 import threading
-
+from lib.utils.logger import log
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -35,8 +35,14 @@ def redownload(bot, update):
         bot.message.reply_text('書本不存在')
         return
     for website in websites:
+
         url = get_url(book_name, website)
-        master_handler(cid, url, bot, redownload=True)
+
+        try:
+            master_handler(cid, url, bot, redownload=True)
+        except Exception as e:
+            bot.message.reply_text('{}網站版本的{}下載失敗'.format(website, book_name))
+            log('[main]', 'Redownload error: ', e)
 
 
 def resend(bot, update):
