@@ -138,12 +138,10 @@ if __name__ == '__main__':
 
     downloader = CzbooksCrawler(sys.argv[1])
 
-    chapter_list = downloader.chapter_list
-
     pool = multiprocessing.Pool()
     pool.map(
         downloader.get_content,
-        range(0, len(chapter_list)),
+        range(0, len(downloader.chapter_list)),
     )
     pool.close()
 

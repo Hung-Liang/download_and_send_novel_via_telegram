@@ -27,9 +27,9 @@ def fetch(url: str, counter=0):
     res = requests.get(url, headers=headers)
 
     if res.status_code != 200:
+        log('[requests_helper]', f'fetch: {res.status_code} {url}')
         fetch(url, counter + 1)
     else:
-        log('[requests_helper]', f'fetch: {res.status_code} {url}')
         return res.text
 
 
