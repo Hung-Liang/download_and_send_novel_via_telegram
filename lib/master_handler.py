@@ -1,5 +1,5 @@
 from lib.tools.json_handler import check_book, add_book, add_website
-from lib.tools.telegram_helper import TelegramHelper
+from lib.helper.telegram_helper import TelegramHelper
 from lib.tools.tools import start_download
 from pathlib import Path
 from lib.tools.tools import (
@@ -12,6 +12,14 @@ from lib.tools.crawler_handler import select_crawler
 
 
 def master_handler(cid, url: str, bot=None, redownload=False):
+    """Master handler of the bot.
+
+    Args:
+        `cid`: The chat id of the user.
+        `url`: The url of the novel.
+        `bot`: The bot object.
+        `redownload`: Redownload the novel.
+    """
 
     crawler, website, crawler_path = select_crawler(url)
 

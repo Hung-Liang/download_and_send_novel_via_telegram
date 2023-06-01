@@ -4,26 +4,55 @@ from sys import platform
 import os
 from time import sleep
 from pathlib import Path
-from lib.tools.telegram_helper import TelegramHelper
+from lib.helper.telegram_helper import TelegramHelper
 
 
 def load_json(path):
+    """Load the json file.
+
+    Args:
+        `path`: The path of the json file.
+
+    Returns:
+        `data`: The data of the json file.
+    """
 
     with open(path, 'r', encoding='utf-8') as f:
         return json.load(f)
 
 
 def save_json(path, data):
+    """Save the data to the json file.
+
+    Args:
+        `path`: The path of the json file.
+        `data`: The data of the json file.
+    """
 
     with open(path, 'w', encoding='utf-8') as f:
         json.dump(data, f, indent=4, ensure_ascii=False)
 
 
 def get_fid(res):
+    """Get the file id from the response.
+
+    Args:
+        `res`: The response from the telegram api.
+
+    Returns:
+        `file_id`: The file id of the file.
+    """
+
     return res['result']['document']['file_id']
 
 
 def start_download(crawler_path, url):
+    """Start the download.
+
+    Args:
+        `crawler_path`: The path of the crawler.
+        `url`: The url of the novel.
+    """
 
     if platform == 'win32':
 
@@ -62,6 +91,7 @@ def delete_dir(path):
     Args:
         `path`: The path of the directory.
     """
+
     files = os.listdir(path)
 
     if len(files) != 0:
@@ -72,6 +102,19 @@ def delete_dir(path):
 
 
 def get_bot_message(book_exist, website_exist, length_match, title, website):
+    """Get the bot message.
+
+    Args:
+        `book_exist`: True if the book exist, False otherwise.
+        `website_exist`: True if the website exist, False otherwise.
+        `length_match`: True if the length match, False otherwise.
+        `title`: The title of the novel.
+        `website`: The website of the novel.
+
+    Returns:
+        `bot_message`: The bot message.
+    """
+
     if book_exist and website_exist and length_match:
         bot_message = "<b>{}</b>網站版本的<b>{}</b>已存在，且沒有更新，正在傳送副本".format(
             website, title

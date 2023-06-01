@@ -17,6 +17,7 @@ def check_book(title, website, length):
         False, False, False: book not exist,
             website not exist, length not match
     """
+
     books = load_json(BOOKS_JSON_PATH)
 
     for book in books:
@@ -44,6 +45,7 @@ def get_websites(title):
     Returns:
         book exist, websites
     """
+
     books = load_json(BOOKS_JSON_PATH)
 
     for book in books:
@@ -63,6 +65,7 @@ def get_url(title, website):
     Returns:
         book's url
     """
+
     books = load_json(BOOKS_JSON_PATH)
 
     return books[title]['websites'][website]['url']
@@ -78,6 +81,7 @@ def get_fid(title, website):
     Returns:
         book's fid
     """
+
     books = load_json(BOOKS_JSON_PATH)
 
     return books[title]['websites'][website]['fid']
@@ -93,6 +97,7 @@ def get_all_fid():
     Returns:
         all fid
     """
+
     books = load_json(BOOKS_JSON_PATH)
     fid_list = []
     for book in books:
@@ -109,6 +114,7 @@ def add_book(title, author):
         `title`: book title
         `author`: book author
     """
+
     books = load_json(BOOKS_JSON_PATH)
 
     book = {
@@ -131,6 +137,7 @@ def add_website(title, website, url, fid, length):
         `fid`: file id
         `length`: chapter length
     """
+
     books = load_json(BOOKS_JSON_PATH)
 
     book = {
@@ -150,6 +157,7 @@ def get_all_books_info():
     Returns:
         all books info
     """
+
     books = load_json(BOOKS_JSON_PATH)
 
     info = ""
@@ -167,6 +175,7 @@ def delete_website(title, website):
         `title`: book title
         `website`: website name
     """
+
     books = load_json(BOOKS_JSON_PATH)
 
     del books[title]['websites'][website]

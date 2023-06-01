@@ -11,6 +11,16 @@ from lib.utils.file_path import (
 
 
 def select_crawler(url):
+    """Select the crawler by the url.
+
+    Args:
+        `url`: The url of the book.
+
+    Returns:
+        `crawler`: The crawler of the book.
+        `website`: The website of the book.
+        `crawler_path`: The path of the crawler.
+    """
 
     if url.startswith('https://czbooks.net'):
         crawler = CzbooksCrawler(url)

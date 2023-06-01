@@ -63,6 +63,7 @@ class TelegramHelper:
         Returns:
             True if success, False if fail.
         """
+
         files = {
             "document": (
                 filename,
@@ -108,6 +109,48 @@ class TelegramHelper:
             '[telegram_lib]',
             f'send document by fid: {res.status_code} {res.text}',
         )
+
+        if res.status_code == 200:
+            return True
+        else:
+            return False
+
+    def download_document(self, fid, path):
+        """Download document by file id from Telegram.
+
+        Args:
+            `fid`: File ID.
+
+        Returns:
+            True if success, False if fail.
+        """
+
+        url = 'https://api.telegram.org/bot{}/getFile?file_id={}'.format(
+            self.token, fid
+        )
+
+        res = requests.post(url)
+
+        log(
+            '[telegram_lib]',
+            f'download document by fid: {res.status_code} {res.text}',
+        )
+
+        file_uri = json.loads(res.text)['result']['file_path']
+
+        url = 'https://api.telegram.org/file/bot{}/{}'.format(
+            self.token, file_uri
+        )
+
+        res = requests.get(url)
+
+        log(
+            '[telegram_lib]',
+            f'download document by file path: {res.status_code} {res.text}',
+        )
+
+        with open(path, 'w', encoding='utf-8') as f:
+            f.write(res.text)
 
         if res.status_code == 200:
             return True

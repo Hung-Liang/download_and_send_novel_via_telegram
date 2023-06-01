@@ -5,15 +5,17 @@ from datetime import datetime
 
 
 def log(*messages, console: bool = False):
-    '''Basic Log to Record Progress.
+    """Basic Log to Record Progress.
 
     Args:
-        messages: Logging message.
-    '''
+        `messages`: Logging message.
+    """
 
-    file_path = Path(LOG_PATH, 'log.log')
+    today = datetime.now().strftime('%Y-%m-%d') + '.log'
 
-    with open(file_path, 'a') as f:
+    file_path = Path(LOG_PATH, today)
+
+    with open(file_path, 'a', encoding='utf-8') as f:
         print(datetime.now().strftime('%Y-%m-%d %H:%M:%S'), *messages, file=f)
 
     if console:
