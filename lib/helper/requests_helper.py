@@ -19,15 +19,16 @@ def fetch(url: str, counter=0):
 
     headers = {
         'User-Agent': (
-            "Mozilla/5.0 (Windows NT 6.3; WOW64) AppleWebKit/537.36 (KHTML,"
-            " like Gecko) Chrome/39.0.2171.95 Safari/537.36"
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
+            " (KHTML, like Gecko) Chrome/117.0.0.0 Safari/537.36"
+            " Edg/117.0.2045.41"
         )
     }
 
     res = requests.get(url, headers=headers)
 
     if res.status_code != 200:
-        log('[requests_helper]', f'fetch: {res.status_code} {url}')
+        log('[requests_helper]', f'fetch: {res.status_code} {url} {res.text}')
         fetch(url, counter + 1)
     else:
         return res.text

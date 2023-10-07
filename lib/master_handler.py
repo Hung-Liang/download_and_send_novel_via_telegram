@@ -69,7 +69,6 @@ def master_handler(cid, url: str, bot=None, redownload=False):
     previous_size = 0
 
     while True:
-
         finished, previous_size, current_size = progress_check(
             destination_path, previous_size, chapter_size
         )

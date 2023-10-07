@@ -4,6 +4,8 @@ from lib.crawler.hetubook_crawler import HetubookCrawler
 from lib.crawler.zhsxstw_crawler import ZhsxstwCrawler
 from lib.crawler.sto_crawler import StoCrawler
 from lib.crawler.novel543_crawler import Novel543Crawler
+from lib.crawler.supertime01_crawler import Supertime01Crawler
+from lib.crawler.zhsshu_crawler import ZhsshuCrawler
 
 from lib.utils.file_path import (
     CZBOOKS_CRAWLER_PATH,
@@ -12,6 +14,8 @@ from lib.utils.file_path import (
     ZHSXSTW_CRAWLER_PATH,
     STO_CRAWLER_PATH,
     NOVEL543_CRAWLER_PATH,
+    SUPERTIME01_CRAWLER_PATH,
+    ZHSSHU_CRAWLER_PATH,
 )
 
 
@@ -47,6 +51,11 @@ def select_crawler(url):
         website = "zhsxstw"
         crawler_path = ZHSXSTW_CRAWLER_PATH
 
+    elif url.startswith('https://tw.zhsshu.com'):
+        crawler = ZhsshuCrawler(url)
+        website = "zhsshu"
+        crawler_path = ZHSSHU_CRAWLER_PATH
+
     elif url.startswith('https://sto520.com'):
         crawler = StoCrawler(url)
         website = "sto"
@@ -56,6 +65,11 @@ def select_crawler(url):
         crawler = Novel543Crawler(url)
         website = "novel543"
         crawler_path = NOVEL543_CRAWLER_PATH
+
+    elif url.startswith('https://br.supertime01.com/'):
+        crawler = Supertime01Crawler(url)
+        website = "supertime01"
+        crawler_path = SUPERTIME01_CRAWLER_PATH
 
     else:
         return None, None, None
