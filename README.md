@@ -1,4 +1,4 @@
-# sendNovelTxtViaTelegram
+# download_and_send_novel_via_telegram
 
 - 透過Telegram將小說傳給使用者
   - 從小說網站快速的抓取小說資料
