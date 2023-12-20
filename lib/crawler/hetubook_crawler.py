@@ -7,7 +7,7 @@ project_path = os.path.dirname(
 sys.path.append(project_path)
 
 import multiprocessing
-from lib.helper.requests_helper import find_element, get_soup
+from lib.helper.requests_helper import get_soup
 from lib.helper.crawler_helper import (
     create_directory,
     make_chapter_file,
@@ -66,7 +66,7 @@ class HetubookCrawler:
         """
 
         self.title = (
-            find_element(self.soup, 'div', 'book_info finish')
+            self.soup.find('div', 'book_info finish')
             .find('h2')
             .text.strip()
             .replace('》', '')
@@ -83,7 +83,7 @@ class HetubookCrawler:
         """
 
         self.author = (
-            find_element(self.soup, 'div', 'book_info finish')
+            self.soup.find('div', 'book_info finish')
             .find('div')
             .text.strip()
             .replace('作者：', '')

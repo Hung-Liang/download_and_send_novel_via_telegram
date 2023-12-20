@@ -7,7 +7,7 @@ project_path = os.path.dirname(
 sys.path.append(project_path)
 
 import multiprocessing
-from lib.helper.requests_helper import find_element, get_soup
+from lib.helper.requests_helper import get_soup
 from lib.helper.crawler_helper import (
     create_directory,
     make_chapter_file,
@@ -65,7 +65,7 @@ class StoCrawler:
             `title`: The title of the book.
         """
 
-        self.title = find_element(self.soup, 'h1', 'booktitle').text.strip()
+        self.title = self.soup.find('h1', 'booktitle').text.strip()
 
         return self.title
 
@@ -76,7 +76,7 @@ class StoCrawler:
             `author`: The author of the book.
         """
 
-        self.author = find_element(self.soup, 'a', 'red').text.strip()
+        self.author = self.soup.find('a', 'red').text.strip()
         return self.author
 
     def get_all_pages(self):
@@ -110,9 +110,9 @@ class StoCrawler:
 
         soup = get_soup(self.chapter_list[index])
 
-        if find_element(soup, 'h1', 'pt10'):
+        if self.soup.find('h1', 'pt10'):
             chapter_name = (
-                find_element(soup, 'h1', 'pt10')
+                self.soup.find('h1', 'pt10')
                 .text.replace(self.title, '')
                 .replace('《》', '')
             )

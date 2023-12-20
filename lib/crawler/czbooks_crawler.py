@@ -7,7 +7,7 @@ project_path = os.path.dirname(
 sys.path.append(project_path)
 
 import multiprocessing
-from lib.helper.requests_helper import find_element, get_soup
+from lib.helper.requests_helper import get_soup
 from lib.helper.crawler_helper import (
     create_directory,
     make_chapter_file,
@@ -66,7 +66,7 @@ class CzbooksCrawler:
         """
 
         self.title = (
-            find_element(self.soup, 'span', 'title')
+            self.soup.find('span', 'title')
             .text.strip()
             .replace('》', '')
             .replace('《', '')
@@ -81,7 +81,7 @@ class CzbooksCrawler:
             `author`: The author of the book.
         """
 
-        self.author = find_element(self.soup, 'span', 'author').a.text.strip()
+        self.author = self.soup.find('span', 'author').a.text.strip()
         return self.author
 
     def get_all_pages(self):
@@ -92,9 +92,7 @@ class CzbooksCrawler:
         """
 
         self.chapter_list = []
-        for t in find_element(self.soup, 'ul', 'nav chapter-list').find_all(
-            'a'
-        ):
+        for t in self.soup.find('ul', 'nav chapter-list').find_all('a'):
             self.chapter_list.append(self.url_prefix + t.get('href'))
 
         return self.chapter_list
@@ -117,17 +115,17 @@ class CzbooksCrawler:
 
         soup = get_soup(self.chapter_list[index])
 
-        if find_element(soup, 'div', 'name'):
+        if self.soup.find('div', 'name'):
             chapter_name = (
-                find_element(soup, 'div', 'name')
+                self.soup.find('div', 'name')
                 .text.replace(self.title, '')
                 .replace('《》', '')
             )
         else:
             chapter_name = '第{}章'.format(index)
 
-        if find_element(soup, 'div', 'content'):
-            content = find_element(soup, 'div', 'content').text
+        if self.soup.find(soup, 'div', 'content'):
+            content = self.soup.find('div', 'content').text
         else:
             content = '\n\n'
 

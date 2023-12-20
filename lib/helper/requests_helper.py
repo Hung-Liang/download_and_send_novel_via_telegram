@@ -51,18 +51,3 @@ def get_soup(url=None, response_text=None):
         return BeautifulSoup(fetch(url), 'lxml')
     else:
         raise Exception('get_soup: url or response_text must be provided')
-
-
-def find_element(soup, class_tag, class_name):
-    """Find element from soup
-
-    Args:
-        `soup`: soup
-        `class_tag`: class tag
-        `class_name`: class name
-
-    Returns:
-        `soup.find(class_tag, class_name)`: element
-    """
-
-    return soup.find(class_tag, class_name)

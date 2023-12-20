@@ -7,7 +7,7 @@ project_path = os.path.dirname(
 sys.path.append(project_path)
 
 import multiprocessing
-from lib.helper.requests_helper import find_element, get_soup
+from lib.helper.requests_helper import get_soup
 from lib.helper.crawler_helper import (
     create_directory,
     make_chapter_file,
@@ -65,7 +65,7 @@ class Supertime01Crawler:
         """
 
         self.title = (
-            find_element(self.soup, 'b', 'name')
+            self.soup.find('b', 'name')
             .text.strip()
             .replace('》', '')
             .replace('《', '')
@@ -81,9 +81,7 @@ class Supertime01Crawler:
         """
 
         self.author = (
-            find_element(self.soup, 'div', 'author')
-            .text.strip()
-            .replace('作者 :', '')
+            self.soup.find('div', 'author').text.strip().replace('作者 :', '')
         )
         return self.author
 
@@ -95,7 +93,7 @@ class Supertime01Crawler:
         """
 
         self.chapter_list = []
-        for t in find_element(self.soup, 'ul', 'chapterlist').find_all('a'):
+        for t in self.soup.find('ul', 'chapterlist').find_all('a'):
             self.chapter_list.append(self.url_prefix + t.get('href'))
 
         return self.chapter_list
@@ -120,8 +118,8 @@ class Supertime01Crawler:
 
         chapter_name = '第{}章'.format(index)
 
-        if find_element(soup, 'div', 'novelcontent'):
-            lines = find_element(soup, 'div', 'novelcontent').find_all('p')
+        if self.soup.find('div', 'novelcontent'):
+            lines = self.soup.find('div', 'novelcontent').find_all('p')
             content = '\n\n'.join([line.text for line in lines])
 
         else:

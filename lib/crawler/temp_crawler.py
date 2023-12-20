@@ -7,7 +7,7 @@ project_path = os.path.dirname(
 sys.path.append(project_path)
 
 import multiprocessing
-from lib.helper.requests_helper import find_element, fetch, get_soup
+from lib.helper.requests_helper import fetch, get_soup
 from lib.helper.crawler_helper import (
     create_directory,
     make_chapter_file,

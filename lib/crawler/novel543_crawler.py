@@ -7,7 +7,7 @@ project_path = os.path.dirname(
 sys.path.append(project_path)
 
 import multiprocessing
-from lib.helper.requests_helper import find_element, get_soup
+from lib.helper.requests_helper import get_soup
 from lib.helper.crawler_helper import (
     create_directory,
     make_chapter_file,
@@ -65,7 +65,7 @@ class Novel543Crawler:
         """
 
         self.title = (
-            find_element(self.soup, "div", "headline")
+            self.soup.find("div", "headline")
             .find("h1")
             .text.strip()
             .replace("》", "")
@@ -82,7 +82,7 @@ class Novel543Crawler:
         """
 
         self.author = (
-            find_element(self.soup, "div", "headline")
+            self.soup.find("div", "headline")
             .find("h2")
             .a.text.strip()
             .replace("》", "")
@@ -127,15 +127,17 @@ class Novel543Crawler:
 
         if soup.find("div", "chapter-content px-3").find("h1"):
             chapter_name = (
-                soup.find("div", "chapter-content px-3").find("h1").text.strip()
+                soup.find("div", "chapter-content px-3")
+                .find("h1")
+                .text.strip()
             )
 
         else:
             chapter_name = "第{}章".format(index)
 
-        if find_element(soup, "div", "content"):
+        if self.soup.find("div", "content"):
             content = ""
-            for c in find_element(soup, "div", "content"):
+            for c in self.soup.find("div", "content"):
                 content += c.text.strip() + "\n\n"
 
         else:

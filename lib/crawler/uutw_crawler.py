@@ -7,7 +7,7 @@ project_path = os.path.dirname(
 sys.path.append(project_path)
 
 import multiprocessing
-from lib.helper.requests_helper import find_element, get_soup
+from lib.helper.requests_helper import get_soup
 from lib.helper.crawler_helper import (
     create_directory,
     make_chapter_file,
@@ -65,9 +65,7 @@ class UutwCrawler:
             `title`: The title of the book.
         """
 
-        self.title = (
-            find_element(self.soup, 'h2', '').text.strip().split('作者：')[0]
-        )
+        self.title = self.soup.find('h2', '').text.strip().split('作者：')[0]
 
         return self.title
 
@@ -78,9 +76,7 @@ class UutwCrawler:
             `author`: The author of the book.
         """
 
-        self.author = (
-            find_element(self.soup, 'h2', '').text.strip().split('作者：')[1]
-        )
+        self.author = self.soup.find('h2', '').text.strip().split('作者：')[1]
         return self.author
 
     def get_all_pages(self):
@@ -114,9 +110,9 @@ class UutwCrawler:
 
         soup = get_soup(self.chapter_list[index])
 
-        if find_element(soup, 'div', 'h1title'):
+        if self.soup.find('div', 'h1title'):
             chapter_name = (
-                find_element(soup, 'div', 'h1title')
+                self.soup.find('div', 'h1title')
                 .find('h1')
                 .text.replace(self.title, '')
                 .replace('《》', '')
