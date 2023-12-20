@@ -7,7 +7,7 @@ project_path = os.path.dirname(
 sys.path.append(project_path)
 
 import multiprocessing
-from lib.helper.requests_helper import find_element, get_soup
+from lib.helper.requests_helper import find_element, fetch, get_soup
 from lib.helper.crawler_helper import (
     create_directory,
     make_chapter_file,
@@ -18,8 +18,8 @@ from lib.tools.translate import translate_simp_to_trad
 from lib.utils.logger import log
 
 
-class Novel543Crawler:
-    """Crawler for https://www.novel543.com
+class TempCrawler:
+    """Crawler for http://23.225.154.235/
 
     Args:
         `url`: The url of the book.
@@ -44,8 +44,10 @@ class Novel543Crawler:
     """
 
     def __init__(self, url):
-        self.url_prefix = "https://www.novel543.com"
-        self.soup = get_soup(url)
+        self.url_prefix = "http://23.225.154.235"
+
+        res_text = bytes(fetch(url), 'latin1').decode('gb2312')
+        self.soup = get_soup(response_text=res_text)
 
         self.title, self.author = translate_simp_to_trad(
             [self.get_title(), self.get_author()]
@@ -55,7 +57,7 @@ class Novel543Crawler:
         self.chapter_size = self.get_chapter_size()
         self.path = create_directory(OUTPUT_PATH, self.title)
 
-        log("[novel543_crawler]", self.title, self.author, self.chapter_size)
+        # log("[novel543_crawler]", self.title, self.author, self.chapter_size)
 
     def get_title(self):
         """Get the title of the book.
@@ -65,7 +67,7 @@ class Novel543Crawler:
         """
 
         self.title = (
-            find_element(self.soup, "div", "headline")
+            self.soup.find("div", id="info")
             .find("h1")
             .text.strip()
             .replace("》", "")
@@ -82,9 +84,9 @@ class Novel543Crawler:
         """
 
         self.author = (
-            find_element(self.soup, "div", "headline")
-            .find("h2")
-            .a.text.strip()
+            self.soup.find("div", id="info")
+            .find("p")
+            .text.strip()
             .replace("》", "")
             .replace("《", "")
         )
@@ -98,12 +100,8 @@ class Novel543Crawler:
         """
 
         self.chapter_list = []
-        for t in (
-            self.soup.find("div", "read")
-            .find_all("dl")[1]
-            .find_all("a", rel="nofollow")
-        ):
-            self.chapter_list.append(self.url_prefix + t.get("href"))
+        for t in self.soup.find_all("dd"):
+            self.chapter_list.append(self.url_prefix + t.a.get("href"))
 
         return self.chapter_list
 
@@ -123,20 +121,20 @@ class Novel543Crawler:
             `index`: The index of the chapter.
         """
 
-        soup = get_soup(self.chapter_list[index])
+        res_text = bytes(fetch(self.chapter_list[index]), 'latin1').decode(
+            'gb2312', 'replace'
+        )
 
-        if soup.find("div", "chapter-content px-3").find("h1"):
-            chapter_name = (
-                soup.find("div", "chapter-content px-3").find("h1").text.strip()
-            )
+        soup = get_soup(response_text=res_text)
+
+        if soup.find("div", "bookname").find("h1"):
+            chapter_name = soup.find("div", "bookname").find("h1").text.strip()
 
         else:
             chapter_name = "第{}章".format(index)
 
-        if find_element(soup, "div", "content"):
-            content = ""
-            for c in find_element(soup, "div", "content"):
-                content += c.text.strip() + "\n\n"
+        if soup.text:
+            content = soup.text
 
         else:
             content = "\n\n"
@@ -145,7 +143,8 @@ class Novel543Crawler:
 
 
 if __name__ == "__main__":
-    downloader = Novel543Crawler(sys.argv[1])
+    # downloader = Novel543Crawler(sys.argv[1])
+    downloader = TempCrawler("http://23.225.154.235/6_6703/")
 
     pool = multiprocessing.Pool()
     pool.map(
