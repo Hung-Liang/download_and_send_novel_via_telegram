@@ -30,10 +30,11 @@ def is_chapter_line(line):
         True if the line is a chapter line, False otherwise.
     """
 
-    result = re.match(
-        r'(\s+|\n|)(第)([\u4e00-\u9fa5a-zA-Z0-9]{1,7})[章節卷集部篇回][^\n]{1,35}(|\n)',
-        line,
+    pattern = (
+        r"(\s+|\n|)(第)([\u4e00-\u9fa5a-zA-Z0-9]{1,7})"
+        r"[章節卷集部篇回][^\n]{1,35}(|\n)"
     )
+    result = re.match(pattern, line)
 
     if result:
         return True

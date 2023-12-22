@@ -1,14 +1,14 @@
 from lib.tools.json_handler import check_book, add_book, add_website
 from lib.helper.telegram_helper import TelegramHelper
-from lib.tools.tools import start_download
 from pathlib import Path
 from lib.tools.tools import (
     get_fid,
-    progress_check,
+    check_progress,
     delete_dir,
     get_bot_message,
 )
 from lib.tools.crawler_handler import select_crawler
+import threading
 
 
 def master_handler(cid, url: str, bot=None, redownload=False):
@@ -21,7 +21,7 @@ def master_handler(cid, url: str, bot=None, redownload=False):
         `redownload`: Redownload the novel.
     """
 
-    crawler, website, crawler_path = select_crawler(url)
+    crawler, website = select_crawler(url)
 
     if bot and not crawler:
         bot.message.reply_text("網址不支援")
@@ -61,35 +61,18 @@ def master_handler(cid, url: str, bot=None, redownload=False):
     if not book_exist:
         add_book(title, author)
 
-    start_download(crawler_path, url)
+    progress_thread = threading.Thread(
+        target=check_progress,
+        args=(title, website, destination_path, chapter_size, bot, message),
+    )
+    progress_thread.start()
+
+    crawler.download()
+
+    progress_thread.join()
 
     file_name = "{}.txt".format(title)
     file_path = Path(destination_path, file_name)
-
-    previous_size = 0
-
-    while True:
-        finished, previous_size, current_size = progress_check(
-            destination_path, previous_size, chapter_size
-        )
-        if finished:
-            if bot:
-                message.edit_text(
-                    "<b>{}</b>網站版本的<b>{}</b>下載完成，正在傳送".format(website, title),
-                    parse_mode="HTML",
-                )
-            break
-        else:
-            if bot:
-                try:
-                    message.edit_text(
-                        "<b>{}</b>網站版本的<b>{}</b>下載中，進度：{}/{}".format(
-                            website, title, current_size, chapter_size
-                        ),
-                        parse_mode="HTML",
-                    )
-                except Exception:
-                    pass
 
     success, res = telegram_helper.send_document(
         cid, file_path, "[{}] {}".format(website, file_name)
