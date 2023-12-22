@@ -1,24 +1,10 @@
-import os
-import sys
-
-project_path = os.path.dirname(
-    os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-)
-sys.path.append(project_path)
-
-import multiprocessing
-from lib.helper.requests_helper import find_element, get_soup
-from lib.helper.crawler_helper import (
-    create_directory,
-    make_chapter_file,
-    merge_chapter,
-)
-from lib.utils.file_path import OUTPUT_PATH
-from lib.tools.translate import translate_simp_to_trad
+from lib.crawler.basic_crawler import BasicCrawler
+from lib.helper.crawler_helper import make_chapter_file
+from lib.helper.requests_helper import get_soup
 from lib.utils.logger import log
 
 
-class StoCrawler:
+class StoCrawler(BasicCrawler):
     """Crawler for https://sto520.com
 
     Args:
@@ -38,9 +24,12 @@ class StoCrawler:
         `get_author`: Get the author of the book.
         `get_all_pages`: Get the all pages of the book.
         `get_chapter_size`: Get the size of the chapters.
-        `get_chapter_list`: Get the list of the chapters.
         `get_content`: Get the content of the chapter
             and create the chapter file.
+        `translate_title_author`: Translate the title and author of the book.
+        `set_path`: Create the directory of the book.
+        `get_path`: Get the directory of the book.
+        `download`: Download the book.
     """
 
     def __init__(self, url):
@@ -48,13 +37,10 @@ class StoCrawler:
         self.url_prefix = ""
         self.soup = get_soup(url)
 
-        self.title, self.author = translate_simp_to_trad(
-            [self.get_title(), self.get_author()]
-        )
-
+        self.title, self.author = self.translate_title_author()
         self.chapter_list = self.get_all_pages()
         self.chapter_size = self.get_chapter_size()
-        self.path = create_directory(OUTPUT_PATH, self.title)
+        self.set_path()
 
         log('[sto_crawler]', self.title, self.author, self.chapter_size)
 
@@ -65,7 +51,7 @@ class StoCrawler:
             `title`: The title of the book.
         """
 
-        self.title = find_element(self.soup, 'h1', 'booktitle').text.strip()
+        self.title = self.soup.find('h1', 'booktitle').text.strip()
 
         return self.title
 
@@ -76,7 +62,7 @@ class StoCrawler:
             `author`: The author of the book.
         """
 
-        self.author = find_element(self.soup, 'a', 'red').text.strip()
+        self.author = self.soup.find('a', 'red').text.strip()
         return self.author
 
     def get_all_pages(self):
@@ -92,15 +78,6 @@ class StoCrawler:
 
         return self.chapter_list
 
-    def get_chapter_size(self):
-        """Get the size of the chapters.
-
-        Returns:
-            `chapter_size`: The size of the chapters.
-        """
-
-        return len(self.chapter_list)
-
     def get_content(self, index):
         """Get the content of the chapter and create the chapter file.
 
@@ -110,9 +87,9 @@ class StoCrawler:
 
         soup = get_soup(self.chapter_list[index])
 
-        if find_element(soup, 'h1', 'pt10'):
+        if soup.find('h1', 'pt10'):
             chapter_name = (
-                find_element(soup, 'h1', 'pt10')
+                soup.find('h1', 'pt10')
                 .text.replace(self.title, '')
                 .replace('《》', '')
             )
@@ -125,17 +102,3 @@ class StoCrawler:
             content = '\n\n'
 
         make_chapter_file(index, chapter_name, content, self.path)
-
-
-if __name__ == '__main__':
-
-    downloader = StoCrawler(sys.argv[1])
-
-    pool = multiprocessing.Pool()
-    pool.map(
-        downloader.get_content,
-        range(0, len(downloader.chapter_list)),
-    )
-    pool.close()
-
-    merge_chapter(downloader.path, downloader.title, downloader.chapter_size)

@@ -1,9 +1,9 @@
 import json
-import subprocess
-from sys import platform
 import os
-from time import sleep
+
 from pathlib import Path
+from time import sleep
+
 from lib.helper.telegram_helper import TelegramHelper
 
 
@@ -46,33 +46,47 @@ def get_fid(res):
     return res['result']['document']['file_id']
 
 
-def start_download(crawler_path, url):
-    """Start the download.
+def check_progress(
+    title, website, destination_path, chapter_size, bot=None, message=None
+):
+    """Check the progress.
 
     Args:
-        `crawler_path`: The path of the crawler.
-        `url`: The url of the novel.
+        `path`: The path of the novel download file.
+
+    Returns:
+        True if the download is finished, False otherwise.
+
     """
 
-    if platform == 'win32':
+    previous_size = 0
+    death_counter = 0
 
-        subprocess.Popen(
-            [
-                'python',
-                crawler_path,
-                url,
-            ]
+    while True:
+
+        finished, previous_size, current_size = number_of_file_check(
+            destination_path, previous_size, chapter_size
         )
-
-    else:
-
-        subprocess.Popen(
-            [
-                'python3',
-                crawler_path,
-                url,
-            ]
-        )
+        if finished:
+            if bot:
+                message.edit_text(
+                    "<b>{}</b>網站版本的<b>{}</b>下載完成，正在傳送".format(website, title),
+                    parse_mode="HTML",
+                )
+            break
+        else:
+            if bot:
+                try:
+                    message.edit_text(
+                        "<b>{}</b>網站版本的<b>{}</b>下載中，進度：{}/{}".format(
+                            website, title, current_size, chapter_size
+                        ),
+                        parse_mode="HTML",
+                    )
+                except Exception:
+                    death_counter += 1
+                    if death_counter == 30:
+                        break
 
 
 def delete_file(path):
@@ -136,7 +150,7 @@ def get_bot_message(book_exist, website_exist, length_match, title, website):
     return bot_message
 
 
-def progress_check(path, previous_size, chapter_size):
+def number_of_file_check(path, previous_size, chapter_size):
     """Check the progress.
 
     Args:
