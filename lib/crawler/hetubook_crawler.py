@@ -20,8 +20,8 @@ class HetubookCrawler(BasicCrawler):
         `path`: The path of the book.
 
     Functions:
-        `get_title`: Get the title of the book.
-        `get_author`: Get the author of the book.
+        `set_title`: Get the title of the book.
+        `set_author`: Get the author of the book.
         `get_all_pages`: Get the all pages of the book.
         `get_chapter_size`: Get the size of the chapters.
         `get_content`: Get the content of the chapter
@@ -45,7 +45,7 @@ class HetubookCrawler(BasicCrawler):
 
         log('[hetubook_crawler]', self.title, self.author, self.chapter_size)
 
-    def get_title(self):
+    def set_title(self):
         """Get the title of the book.
 
         Returns:
@@ -62,7 +62,7 @@ class HetubookCrawler(BasicCrawler):
 
         return self.title
 
-    def get_author(self):
+    def set_author(self):
         """Get the author of the book.
 
         Returns:

@@ -21,8 +21,8 @@ class BasicCrawler:
         `path`: The path of the book.
 
     Functions:
-        `get_title`: Get the title of the book.
-        `get_author`: Get the author of the book.
+        `set_title`: Get the title of the book.
+        `set_author`: Get the author of the book.
         `get_all_pages`: Get the all pages of the book.
         `get_chapter_size`: Get the size of the chapters.
         `get_content`: Get the content of the chapter
@@ -44,13 +44,21 @@ class BasicCrawler:
         self.chapter_size = None
         self.path = None
 
-    def get_title(self):
+    def set_title(self):
         """Get the title of the book."""
         pass
 
-    def get_author(self):
+    def set_author(self):
         """Get the author of the book."""
         pass
+
+    def get_title(self):
+        """Get the title of the book."""
+        return self.title
+
+    def get_author(self):
+        """Get the author of the book."""
+        return self.author
 
     def get_all_pages(self):
         """Get the all pages of the book."""
@@ -70,7 +78,7 @@ class BasicCrawler:
 
     def translate_title_author(self):
         """Translate the title and author of the book."""
-        return translate_simp_to_trad([self.get_title(), self.get_author()])
+        return translate_simp_to_trad([self.set_title(), self.set_author()])
 
     def set_path(self):
         """Create the directory of the book."""
