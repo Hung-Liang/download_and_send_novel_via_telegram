@@ -11,7 +11,7 @@ class StoCrawler(BasicCrawler):
         `url`: The url of the book.
 
     Attributes:
-        `url_prefix`: The prefix of the url.
+        `base_url`: The prefix of the url.
         `soup`: The soup of the url.
         `title`: The title of the book.
         `author`: The author of the book.
@@ -34,7 +34,7 @@ class StoCrawler(BasicCrawler):
 
     def __init__(self, url):
 
-        self.url_prefix = ""
+        self.base_url = ""
         self.soup = get_soup(url)
 
         self.title, self.author = self.translate_title_author()
@@ -74,7 +74,7 @@ class StoCrawler(BasicCrawler):
 
         self.chapter_list = []
         for t in self.soup.find('div', id='list-chapterAll').find_all('a'):
-            self.chapter_list.append(self.url_prefix + t.get('href'))
+            self.chapter_list.append(self.base_url + t.get('href'))
 
         return self.chapter_list
 

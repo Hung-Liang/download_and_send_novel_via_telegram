@@ -11,7 +11,7 @@ class ZhsshuCrawler(BasicCrawler):
         `url`: The url of the book.
 
     Attributes:
-        `url_prefix`: The prefix of the url.
+        `base_url`: The prefix of the url.
         `soup`: The soup of the url.
         `title`: The title of the book.
         `author`: The author of the book.
@@ -36,7 +36,7 @@ class ZhsshuCrawler(BasicCrawler):
         if r"/book/" in url:
             url = url.replace("book", "chapter")
 
-        self.url_prefix = "https://tw.zhsshu.com"
+        self.base_url = "https://tw.zhsshu.com"
         self.soup = get_soup(url)
 
         self.title, self.author = self.translate_title_author()
@@ -95,7 +95,7 @@ class ZhsshuCrawler(BasicCrawler):
 
         for t in self.soup.find_all('td', 'chapterlist'):
             if t.a.get('href'):
-                self.chapter_list.append(self.url_prefix + t.a.get('href'))
+                self.chapter_list.append(self.base_url + t.a.get('href'))
 
         return self.chapter_list
 

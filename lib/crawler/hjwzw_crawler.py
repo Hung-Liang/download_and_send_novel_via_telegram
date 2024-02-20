@@ -12,7 +12,7 @@ class HjwzwCrawler(BasicCrawler):
         `url`: The url of the book.
 
     Attributes:
-        `url_prefix`: The prefix of the url.
+        `base_url`: The prefix of the url.
         `soup`: The soup of the url.
         `title`: The title of the book.
         `author`: The author of the book.
@@ -35,7 +35,7 @@ class HjwzwCrawler(BasicCrawler):
 
     def __init__(self, url):
 
-        self.url_prefix = "https://tw.hjwzw.com"
+        self.base_url = "https://tw.hjwzw.com"
         self.soup = get_soup(url)
 
         self.title, self.author = self.translate_title_author()
@@ -81,7 +81,7 @@ class HjwzwCrawler(BasicCrawler):
         self.chapter_list = []
         for t in self.soup.find('div', id='tbchapterlist').find_all('td'):
             if t.a:
-                self.chapter_list.append(self.url_prefix + t.a.get('href'))
+                self.chapter_list.append(self.base_url + t.a.get('href'))
 
         return self.chapter_list
 

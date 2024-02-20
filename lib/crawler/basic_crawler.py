@@ -12,7 +12,7 @@ class BasicCrawler:
         `url`: The url of the book.
 
     Attributes:
-        `url_prefix`: The prefix of the url.
+        `base_url`: The prefix of the url.
         `soup`: The soup of the url.
         `title`: The title of the book.
         `author`: The author of the book.
@@ -35,7 +35,7 @@ class BasicCrawler:
 
     def __init__(self, url):
 
-        self.url_prefix = None
+        self.base_url = None
         self.soup = None
 
         self.title, self.author = None, None

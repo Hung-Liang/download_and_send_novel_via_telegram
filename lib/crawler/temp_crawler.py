@@ -11,7 +11,7 @@ class TempCrawler(BasicCrawler):
         `url`: The url of the book.
 
     Attributes:
-        `url_prefix`: The prefix of the url.
+        `base_url`: The prefix of the url.
         `soup`: The soup of the url.
         `title`: The title of the book.
         `author`: The author of the book.
@@ -33,7 +33,7 @@ class TempCrawler(BasicCrawler):
     """
 
     def __init__(self, url):
-        self.url_prefix = "http://23.225.154.235"
+        self.base_url = "http://23.225.154.235"
 
         res_text = bytes(fetch(url), 'latin1').decode('gb2312')
         self.soup = get_soup(response_text=res_text)
@@ -91,7 +91,7 @@ class TempCrawler(BasicCrawler):
 
         self.chapter_list = []
         for t in self.soup.find_all("dd"):
-            self.chapter_list.append(self.url_prefix + t.a.get("href"))
+            self.chapter_list.append(self.base_url + t.a.get("href"))
 
         return self.chapter_list
 
