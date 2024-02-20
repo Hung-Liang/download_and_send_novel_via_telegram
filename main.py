@@ -20,7 +20,7 @@ load_dotenv()
 
 
 def download(bot, update):
-    url = str(bot.message['text'].replace('/d', '').strip())
+    url = str(bot.message['text'].replace('/d', '', 1).strip())
     cid = bot.message.from_user.id
     master_handler(cid, url, bot)
 
