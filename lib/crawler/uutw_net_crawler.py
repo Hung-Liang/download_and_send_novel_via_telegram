@@ -1,11 +1,13 @@
+import re
+
 from lib.crawler.basic_crawler import BasicCrawler
 from lib.helper.crawler_helper import make_chapter_file
 from lib.helper.requests_helper import get_soup
 from lib.utils.logger import log
 
 
-class Novel543Crawler(BasicCrawler):
-    """Crawler for https://www.novel543.com
+class UutwNetCrawler(BasicCrawler):
+    """Crawler for https://tw.uukanshu.net
 
     Args:
         `url`: The url of the book.
@@ -33,15 +35,18 @@ class Novel543Crawler(BasicCrawler):
     """
 
     def __init__(self, url):
-        self.url_prefix = "https://www.novel543.com"
+
+        self.url_prefix = "https://tw.uukanshu.net"
         self.soup = get_soup(url)
 
         self.title, self.author = self.translate_title_author()
+
         self.chapter_list = self.get_all_pages()
         self.chapter_size = self.get_chapter_size()
+
         self.set_path()
 
-        log("[novel543_crawler]", self.title, self.author, self.chapter_size)
+        log('[uutw_crawler]', self.title, self.author, self.chapter_size)
 
     def set_title(self):
         """Get the title of the book.
@@ -50,13 +55,7 @@ class Novel543Crawler(BasicCrawler):
             `title`: The title of the book.
         """
 
-        self.title = (
-            self.soup.find("h1", "title is-2")
-            .text.strip()
-            .replace("《", "")
-            .replace("》", "")
-            .replace(" 章節列表", "")
-        )
+        self.title = self.soup.find('h2', '').text.strip().split('作者：')[0]
 
         return self.title
 
@@ -67,11 +66,7 @@ class Novel543Crawler(BasicCrawler):
             `author`: The author of the book.
         """
 
-        self.author = (
-            self.soup.find("h2", "title is-4")
-            .text.strip()
-            .replace("作者 / ", "")
-        )
+        self.author = self.soup.find('h2', '').text.strip().split('作者：')[1]
         return self.author
 
     def get_all_pages(self):
@@ -82,11 +77,10 @@ class Novel543Crawler(BasicCrawler):
         """
 
         self.chapter_list = []
-        for t in self.soup.find(
-            "ul", "flex one two-700 three-900 all"
-        ).find_all("li"):
-            self.chapter_list.append(self.url_prefix + t.a.get("href"))
+        for t in self.soup.find('ul', id='chapterList').find_all('a'):
+            self.chapter_list.append(self.url_prefix + t.get('href'))
 
+        self.chapter_list = self.chapter_list[::-1]
         return self.chapter_list
 
     def get_content(self, index):
@@ -98,22 +92,22 @@ class Novel543Crawler(BasicCrawler):
 
         soup = get_soup(self.chapter_list[index])
 
-        if soup.find("div", "chapter-content px-3").find("h1"):
+        if soup.find('div', 'h1title'):
             chapter_name = (
-                soup.find("div", "chapter-content px-3")
-                .find("h1")
-                .text.strip()
+                soup.find('div', 'h1title')
+                .find('h1')
+                .text.replace(self.title, '')
+                .replace('《》', '')
             )
+        else:
+            chapter_name = '第{}章'.format(index)
+
+        if soup.find('div', 'contentbox'):
+            content = soup.find('div', 'contentbox').text
+
+            content = re.sub(r'[\s　]+', '\n\n', content)
 
         else:
-            chapter_name = "第{}章".format(index)
-
-        if soup.find("div", "content"):
-            content = ""
-            for c in soup.find("div", "content"):
-                content += c.text.strip() + "\n\n"
-
-        else:
-            content = "\n\n"
+            content = '\n\n'
 
         make_chapter_file(index, chapter_name, content, self.path)

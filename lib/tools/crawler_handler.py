@@ -5,6 +5,7 @@ from lib.crawler.novel543_crawler import Novel543Crawler
 from lib.crawler.sto_crawler import StoCrawler
 from lib.crawler.supertime01_crawler import Supertime01Crawler
 from lib.crawler.uutw_crawler import UutwCrawler
+from lib.crawler.uutw_net_crawler import UutwNetCrawler
 from lib.crawler.xinshu69 import XinShu69
 from lib.crawler.zhsshu_crawler import ZhsshuCrawler
 from lib.crawler.zhsxstw_crawler import ZhsxstwCrawler
@@ -62,6 +63,10 @@ def select_crawler(url):
     elif url.startswith('https://www.69xinshu.com'):
         crawler = XinShu69(url)
         website = "69xinshu"
+
+    elif url.startswith('https://tw.uukanshu.net'):
+        crawler = UutwNetCrawler(url)
+        website = "uutw_net"
 
     else:
         crawler = None

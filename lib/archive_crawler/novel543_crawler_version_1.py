@@ -51,11 +51,11 @@ class Novel543Crawler(BasicCrawler):
         """
 
         self.title = (
-            self.soup.find("h1", "title is-2")
+            self.soup.find("div", "headline")
+            .find("h1")
             .text.strip()
-            .replace("《", "")
             .replace("》", "")
-            .replace(" 章節列表", "")
+            .replace("《", "")
         )
 
         return self.title
@@ -68,9 +68,11 @@ class Novel543Crawler(BasicCrawler):
         """
 
         self.author = (
-            self.soup.find("h2", "title is-4")
-            .text.strip()
-            .replace("作者 / ", "")
+            self.soup.find("div", "headline")
+            .find("h2")
+            .a.text.strip()
+            .replace("》", "")
+            .replace("《", "")
         )
         return self.author
 
@@ -82,10 +84,12 @@ class Novel543Crawler(BasicCrawler):
         """
 
         self.chapter_list = []
-        for t in self.soup.find(
-            "ul", "flex one two-700 three-900 all"
-        ).find_all("li"):
-            self.chapter_list.append(self.url_prefix + t.a.get("href"))
+        for t in (
+            self.soup.find("div", "read")
+            .find_all("dl")[1]
+            .find_all("a", rel="nofollow")
+        ):
+            self.chapter_list.append(self.url_prefix + t.get("href"))
 
         return self.chapter_list
 
