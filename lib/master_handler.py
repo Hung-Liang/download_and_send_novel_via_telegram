@@ -24,7 +24,7 @@ def master_handler(cid, url: str, bot=None, redownload=False):
     crawler, website = select_crawler(url)
 
     if bot and not crawler:
-        bot.message.reply_text("網址不支援")
+        bot.message.reply_text("網址不支援: {}".format(url))
         return
 
     title = crawler.title

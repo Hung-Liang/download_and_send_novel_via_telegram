@@ -25,6 +25,13 @@ def download(bot, update):
     master_handler(cid, url, bot)
 
 
+def multiple_download(bot, update):
+    urls = bot.message['text'].replace('/md', '', 1).strip().split()
+    cid = bot.message.from_user.id
+    for url in urls:
+        master_handler(cid, url, bot)
+
+
 def redownload(bot, update):
     book_name = bot.message['text'].replace('/redownload', '').strip()
     cid = bot.message.from_user.id
@@ -102,6 +109,7 @@ def shutdown():
 updater = Updater(os.environ.get("tg_token"))
 
 updater.dispatcher.add_handler(CommandHandler('d', download))
+updater.dispatcher.add_handler(CommandHandler('md', multiple_download))
 updater.dispatcher.add_handler(CommandHandler('redownload', redownload))
 updater.dispatcher.add_handler(CommandHandler('resend', resend))
 updater.dispatcher.add_handler(CommandHandler('help', help))
