@@ -4,51 +4,54 @@ from lib.helper.requests_helper import get_soup
 from lib.utils.logger import log
 
 
-class ZhsshuCrawler(BasicCrawler):
-    """Crawler for https://tw.zhsshu.com/
+class ZhsxstwCrawler(BasicCrawler):
+    """Crawler for http://tw.zhsshu.com/
 
     Args:
         `url`: The url of the book.
 
     Attributes:
+        `url`: The url of the book.
         `base_url`: The prefix of the url.
         `soup`: The soup of the url.
         `title`: The title of the book.
         `author`: The author of the book.
+        `intro`: The introduction of the book.
         `chapter_list`: The list of the chapters.
         `chapter_size`: The size of the chapters.
         `path`: The path of the book.
 
     Functions:
+        `setup`: Set up the basic information of the book.
         `set_title`: Get the title of the book.
         `set_author`: Get the author of the book.
+        `set_intro`: Get the introduction of the book.
+        `get_title`: Get the title of the book.
+        `get_author`: Get the author of the book.
+        `get_intro`: Get the introduction of the book.
         `get_all_pages`: Get the all pages of the book.
         `get_chapter_size`: Get the size of the chapters.
         `get_content`: Get the content of the chapter
             and create the chapter file.
-        `translate_title_author`: Translate the title and author of the book.
+        `translate_title_author_intro`:
+            Translate the title, author and introduction of the book.
         `set_path`: Create the directory of the book.
         `get_path`: Get the directory of the book.
         `download`: Download the book.
     """
 
     def __init__(self, url):
-        if r"/book/" in url:
-            url = url.replace("book", "chapter")
+        super().__init__(url)
 
-        self.base_url = "https://tw.zhsshu.com"
+        if "book" in self.url:
+            self.url = url.replace("zhsbook", "zhschapter")
+
+        self.base_url = "http://tw.zhsxs.com"
         self.soup = get_soup(url)
 
-        self.set_title()
-        self.set_author()
-        self.translate_title_author()
+        self.setup()
 
-        self.chapter_list = self.get_all_pages()
-        self.chapter_size = self.get_chapter_size()
-
-        self.set_path()
-
-        log('[zhsshu_crawler]', self.title, self.author, self.chapter_size)
+        log('[zhsxstw_crawler]', self.title, self.author, self.chapter_size)
 
     def set_title(self):
         """Set the title of the book."""
@@ -73,6 +76,11 @@ class ZhsshuCrawler(BasicCrawler):
             .replace('《', '')
             .replace('》', '')
         )
+
+    def set_intro(self):
+        """Set the introduction of the book."""
+
+        self.intro = ""
 
     def get_all_pages(self):
         """Get the all pages of the book.
@@ -109,10 +117,8 @@ class ZhsshuCrawler(BasicCrawler):
         else:
             chapter_name = '第{}章'.format(index)
 
-        content = soup.find_all('td')[1].find_all('div')[7].text
-
-        if content:
-            content = content
+        if soup.find_all('td')[1].find_all('div')[8].text:
+            content = soup.find_all('td')[1].find_all('div')[8].text
         else:
             content = '\n\n'
 

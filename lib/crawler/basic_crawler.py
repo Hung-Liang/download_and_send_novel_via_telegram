@@ -12,28 +12,38 @@ class BasicCrawler:
         `url`: The url of the book.
 
     Attributes:
+        `url`: The url of the book.
         `base_url`: The prefix of the url.
         `soup`: The soup of the url.
         `title`: The title of the book.
         `author`: The author of the book.
+        `intro`: The introduction of the book.
         `chapter_list`: The list of the chapters.
         `chapter_size`: The size of the chapters.
         `path`: The path of the book.
 
     Functions:
+        `setup`: Set up the basic information of the book.
         `set_title`: Get the title of the book.
         `set_author`: Get the author of the book.
+        `set_intro`: Get the introduction of the book.
+        `get_title`: Get the title of the book.
+        `get_author`: Get the author of the book.
+        `get_intro`: Get the introduction of the book.
         `get_all_pages`: Get the all pages of the book.
         `get_chapter_size`: Get the size of the chapters.
         `get_content`: Get the content of the chapter
             and create the chapter file.
-        `translate_title_author`: Translate the title and author of the book.
+        `translate_title_author_intro`:
+            Translate the title, author and introduction of the book.
         `set_path`: Create the directory of the book.
         `get_path`: Get the directory of the book.
         `download`: Download the book.
     """
 
     def __init__(self, url):
+
+        self.url = url
 
         self.base_url = None
         self.soup = None
@@ -43,6 +53,17 @@ class BasicCrawler:
         self.chapter_list = None
         self.chapter_size = None
         self.path = None
+
+    def setup(self):
+        """Set up the basic information of the book."""
+        self.set_title()
+        self.set_author()
+        self.set_intro()
+        self.translate_title_author_intro()
+
+        self.chapter_list = self.get_all_pages()
+        self.chapter_size = self.get_chapter_size()
+        self.set_path()
 
     def set_title(self):
         """Set the title of the book."""
@@ -84,12 +105,17 @@ class BasicCrawler:
         """Get the content of the chapter"""
         pass
 
-    def translate_title_author(self):
-        """Translate the title and author of the book."""
+    def translate_title_author_intro(self):
+        """Translate the title, author and introduction of the book."""
 
-        self.title, self.author = translate_simp_to_trad(
-            [self.title, self.author]
-        )
+        if self.title:
+            self.title = translate_simp_to_trad([self.title])[0]
+
+        if self.author:
+            self.author = translate_simp_to_trad([self.author])[0]
+
+        if self.intro:
+            self.intro = translate_simp_to_trad([self.intro])[0]
 
     def set_path(self):
         """Create the directory of the book."""
@@ -105,4 +131,6 @@ class BasicCrawler:
         with concurrent.futures.ThreadPoolExecutor() as executor:
             executor.map(self.get_content, range(0, len(self.chapter_list)))
 
-        merge_chapter(self.path, self.title, self.chapter_size)
+        merge_chapter(
+            self.path, self.title, self.author, self.intro, self.chapter_size
+        )

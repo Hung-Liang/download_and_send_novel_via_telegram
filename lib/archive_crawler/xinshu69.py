@@ -4,8 +4,8 @@ from lib.helper.requests_helper import get_soup, fetch
 from lib.utils.logger import log
 
 
-class TempCrawler(BasicCrawler):
-    """Crawler for http://23.225.154.235/
+class XinShu69(BasicCrawler):
+    """Crawler for https://www.69xinshu.com/
 
     Args:
         `url`: The url of the book.
@@ -43,37 +43,51 @@ class TempCrawler(BasicCrawler):
     def __init__(self, url):
         super().__init__(url)
 
-        self.base_url = "http://23.225.154.235"
-
+        self.base_url = ""
         res_text = bytes(fetch(url), 'latin1').decode('gb2312')
         self.soup = get_soup(response_text=res_text)
 
-        self.setup()
+        self.chapter_list = self.get_all_pages()
 
-        log("[temp_crawler]", self.title, self.author, self.chapter_size)
+        self.set_title()
+        self.set_author()
+        self.set_intro()
+        self.translate_title_author_intro()
 
-        # log("[novel543_crawler]", self.title, self.author, self.chapter_size)
+        self.chapter_size = self.get_chapter_size()
+
+        self.set_path()
+
+        log('[czbooks_crawler]', self.title, self.author, self.chapter_size)
 
     def set_title(self):
         """Set the title of the book."""
 
         self.title = (
-            self.soup.find("div", id="info")
-            .find("h1")
+            self.soup.find('div', 'bread')
+            .find_all('a')[-2]
             .text.strip()
-            .replace("》", "")
-            .replace("《", "")
+            .replace('》', '')
+            .replace('《', '')
         )
 
     def set_author(self):
         """Set the author of the book."""
 
+        res_text = bytes(fetch(self.chapter_list[0]), 'latin1').decode(
+            'gb2312', 'replace'
+        )
+
+        soup = get_soup(response_text=res_text)
+
         self.author = (
-            self.soup.find("div", id="info")
-            .find("p")
-            .text.strip()
-            .replace("》", "")
-            .replace("《", "")
+            (
+                soup.find('div', 'txtinfo hide720')
+                .find_all('span')[-1]
+                .text.strip()
+            )
+            .replace('作者：', '')
+            .strip()
         )
 
     def set_intro(self):
@@ -89,8 +103,8 @@ class TempCrawler(BasicCrawler):
         """
 
         self.chapter_list = []
-        for t in self.soup.find_all("dd"):
-            self.chapter_list.append(self.base_url + t.a.get("href"))
+        for t in self.soup.find('div', id='catalog').find_all('a'):
+            self.chapter_list.append(self.base_url + t.get('href'))
 
         return self.chapter_list
 
@@ -104,19 +118,22 @@ class TempCrawler(BasicCrawler):
         res_text = bytes(fetch(self.chapter_list[index]), 'latin1').decode(
             'gb2312', 'replace'
         )
-
         soup = get_soup(response_text=res_text)
 
-        if soup.find("div", "bookname").find("h1"):
-            chapter_name = soup.find("div", "bookname").find("h1").text.strip()
-
+        if soup.find('h1', 'hide720'):
+            chapter_name = (
+                soup.find('h1', 'hide720')
+                .text.replace(self.title, '')
+                .replace('《》', '')
+            )
         else:
-            chapter_name = "第{}章".format(index)
+            chapter_name = '第{}章'.format(index)
 
-        if soup.text:
-            content = soup.text
-
+        if soup.find('div', 'txtnav'):
+            content = "\n".join(
+                soup.find('div', 'txtnav').text.splitlines()[3:]
+            )
         else:
-            content = "\n\n"
+            content = '\n\n'
 
         make_chapter_file(index, chapter_name, content, self.path)

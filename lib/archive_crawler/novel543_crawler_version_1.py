@@ -26,7 +26,7 @@ class Novel543Crawler(BasicCrawler):
         `get_chapter_size`: Get the size of the chapters.
         `get_content`: Get the content of the chapter
             and create the chapter file.
-        `translate_title_author`: Translate the title and author of the book.
+        `translate_title_author_intro`: Translate the title, author and introduction of the book.
         `set_path`: Create the directory of the book.
         `get_path`: Get the directory of the book.
         `download`: Download the book.
@@ -36,7 +36,7 @@ class Novel543Crawler(BasicCrawler):
         self.base_url = "https://www.novel543.com"
         self.soup = get_soup(url)
 
-        self.title, self.author = self.translate_title_author()
+        self.title, self.author = self.translate_title_author_intro()
         self.chapter_list = self.get_all_pages()
         self.chapter_size = self.get_chapter_size()
         self.set_path()

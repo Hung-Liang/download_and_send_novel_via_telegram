@@ -13,40 +13,42 @@ class UutwNetCrawler(BasicCrawler):
         `url`: The url of the book.
 
     Attributes:
+        `url`: The url of the book.
         `base_url`: The prefix of the url.
         `soup`: The soup of the url.
         `title`: The title of the book.
         `author`: The author of the book.
+        `intro`: The introduction of the book.
         `chapter_list`: The list of the chapters.
         `chapter_size`: The size of the chapters.
         `path`: The path of the book.
 
     Functions:
+        `setup`: Set up the basic information of the book.
         `set_title`: Get the title of the book.
         `set_author`: Get the author of the book.
+        `set_intro`: Get the introduction of the book.
+        `get_title`: Get the title of the book.
+        `get_author`: Get the author of the book.
+        `get_intro`: Get the introduction of the book.
         `get_all_pages`: Get the all pages of the book.
         `get_chapter_size`: Get the size of the chapters.
         `get_content`: Get the content of the chapter
             and create the chapter file.
-        `translate_title_author`: Translate the title and author of the book.
+        `translate_title_author_intro`:
+            Translate the title, author and introduction of the book.
         `set_path`: Create the directory of the book.
         `get_path`: Get the directory of the book.
         `download`: Download the book.
     """
 
     def __init__(self, url):
+        super().__init__(url)
 
         self.base_url = "https://tw.uukanshu.net"
         self.soup = get_soup(url)
 
-        self.set_title()
-        self.set_author()
-        self.translate_title_author()
-
-        self.chapter_list = self.get_all_pages()
-        self.chapter_size = self.get_chapter_size()
-
-        self.set_path()
+        self.setup()
 
         log('[uutw_crawler]', self.title, self.author, self.chapter_size)
 
@@ -59,6 +61,16 @@ class UutwNetCrawler(BasicCrawler):
         """Set the author of the book."""
 
         self.author = self.soup.find('h2', '').text.strip().split('作者：')[1]
+
+    def set_intro(self):
+        """Set the introduction of the book."""
+
+        self.intro = (
+            self.soup.find('h3')
+            .text.split("www.uukanshu.net")[1]
+            .replace("http://", "")
+            .strip()
+        )
 
     def get_all_pages(self):
         """Get the all pages of the book.

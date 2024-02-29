@@ -81,14 +81,23 @@ def delete_chapter(path, chapter_size):
         delete_file(chapter_path)
 
 
-def merge_chapter(path, title, chapter_size):
+def merge_chapter(path, title, author, intro, chapter_size):
     """Merge the chapter files.
 
     Args:
         `path`: The path of the novel.
         `title`: The title of the novel.
+        `intro`: The introduction of the novel.
         `chapter_size`: The size of the chapter.
     """
+
+    with open(Path(path, "{}.txt".format(title)), 'w', encoding='utf-8') as f:
+        f.write('書名: ' + title + '\n')
+        f.write('作者: ' + author + '\n\n')
+        f.write("介紹:\n")
+        for line in intro.splitlines():
+            f.write('       ' + line.strip() + '\n')
+        f.write('\n\n')
 
     for i in range(chapter_size):
         with open(Path(path, str(i)), 'r', encoding='utf-8') as f:

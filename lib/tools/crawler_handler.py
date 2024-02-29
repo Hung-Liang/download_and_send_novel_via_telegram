@@ -3,14 +3,10 @@ from lib.crawler import (
     HetubookCrawler,
     HjwzwCrawler,
     Novel543Crawler,
-    StoCrawler,
     Supertime01Crawler,
     TtkanCrawler,
-    UutwCrawler,
     UutwNetCrawler,
-    XinShu69,
-    ZhsshuCrawler,
-    ZhsxstwCrawler,
+    ZhswxCrawler,
 )
 from lib.utils.logger import log
 
@@ -43,10 +39,6 @@ def select_crawler(url: str):
         crawler = Novel543Crawler(url)
         website = "novel543"
 
-    elif url.startswith('https://sto520.com'):
-        crawler = StoCrawler(url)
-        website = "sto"
-
     elif url.startswith('https://br.supertime01.com'):
         crawler = Supertime01Crawler(url)
         website = "supertime01"
@@ -55,25 +47,13 @@ def select_crawler(url: str):
         crawler = TtkanCrawler(url)
         website = "ttkan"
 
-    elif url.startswith('https://tw.uukanshu.com'):
-        crawler = UutwCrawler(url)
-        website = "uutw"
-
     elif url.startswith('https://tw.uukanshu.net'):
         crawler = UutwNetCrawler(url)
         website = "uutw_net"
 
-    elif url.startswith('https://www.69xinshu.com'):
-        crawler = XinShu69(url)
-        website = "69xinshu"
-
-    elif url.startswith('https://tw.zhsshu.com'):
-        crawler = ZhsshuCrawler(url)
-        website = "zhsshu"
-
-    elif url.startswith('http://tw.zhsxs.com'):
-        crawler = ZhsxstwCrawler(url)
-        website = "zhsxstw"
+    elif url.startswith('https://tw.zhswx.com'):
+        crawler = ZhswxCrawler(url)
+        website = "zhswx"
 
     else:
         crawler = None
