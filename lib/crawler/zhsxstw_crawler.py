@@ -52,11 +52,7 @@ class ZhsxstwCrawler(BasicCrawler):
         log('[zhsxstw_crawler]', self.title, self.author, self.chapter_size)
 
     def set_title(self):
-        """Get the title of the book.
-
-        Returns:
-            `title`: The title of the book.
-        """
+        """Set the title of the book."""
 
         self.title = (
             self.soup.find('td')
@@ -68,11 +64,7 @@ class ZhsxstwCrawler(BasicCrawler):
         )
 
     def set_author(self):
-        """Get the author of the book.
-
-        Returns:
-            `author`: The author of the book.
-        """
+        """Set the author of the book."""
 
         self.author = (
             self.soup.find('td')

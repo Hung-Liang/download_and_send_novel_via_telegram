@@ -51,11 +51,7 @@ class XinShu69(BasicCrawler):
         log('[czbooks_crawler]', self.title, self.author, self.chapter_size)
 
     def set_title(self):
-        """Get the title of the book.
-
-        Returns:
-            `title`: The title of the book.
-        """
+        """Set the title of the book."""
 
         self.title = (
             self.soup.find('div', 'bread')
@@ -66,11 +62,7 @@ class XinShu69(BasicCrawler):
         )
 
     def set_author(self):
-        """Get the author of the book.
-
-        Returns:
-            `author`: The author of the book.
-        """
+        """Set the author of the book."""
 
         res_text = bytes(fetch(self.chapter_list[0]), 'latin1').decode(
             'gb2312', 'replace'

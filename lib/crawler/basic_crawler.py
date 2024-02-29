@@ -38,18 +38,22 @@ class BasicCrawler:
         self.base_url = None
         self.soup = None
 
-        self.title, self.author = None, None
+        self.title, self.author, self.intro = None, None, None
 
         self.chapter_list = None
         self.chapter_size = None
         self.path = None
 
     def set_title(self):
-        """Get the title of the book."""
+        """Set the title of the book."""
         pass
 
     def set_author(self):
-        """Get the author of the book."""
+        """Set the author of the book."""
+        pass
+
+    def set_intro(self):
+        """Set the introduction of the book."""
         pass
 
     def get_title(self):
@@ -59,6 +63,10 @@ class BasicCrawler:
     def get_author(self):
         """Get the author of the book."""
         return self.author
+
+    def get_intro(self):
+        """Get the introduction of the book."""
+        return self.intro
 
     def get_all_pages(self):
         """Get the all pages of the book."""
