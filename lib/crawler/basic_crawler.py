@@ -78,7 +78,10 @@ class BasicCrawler:
 
     def translate_title_author(self):
         """Translate the title and author of the book."""
-        return translate_simp_to_trad([self.set_title(), self.set_author()])
+
+        self.title, self.author = translate_simp_to_trad(
+            [self.title, self.author]
+        )
 
     def set_path(self):
         """Create the directory of the book."""

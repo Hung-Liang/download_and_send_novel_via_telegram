@@ -37,7 +37,9 @@ class CzbooksCrawler(BasicCrawler):
         self.base_url = "https:"
         self.soup = get_soup(url)
 
-        self.title, self.author = self.translate_title_author()
+        self.set_title()
+        self.set_author()
+        self.translate_title_author()
 
         self.chapter_list = self.get_all_pages()
         self.chapter_size = self.get_chapter_size()
@@ -60,8 +62,6 @@ class CzbooksCrawler(BasicCrawler):
             .replace('《', '')
         )
 
-        return self.title
-
     def set_author(self):
         """Get the author of the book.
 
@@ -70,7 +70,6 @@ class CzbooksCrawler(BasicCrawler):
         """
 
         self.author = self.soup.find('span', 'author').a.text.strip()
-        return self.author
 
     def get_all_pages(self):
         """Get the all pages of the book.

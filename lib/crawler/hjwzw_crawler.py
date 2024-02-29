@@ -38,7 +38,9 @@ class HjwzwCrawler(BasicCrawler):
         self.base_url = "https://tw.hjwzw.com"
         self.soup = get_soup(url)
 
-        self.title, self.author = self.translate_title_author()
+        self.set_title()
+        self.set_author()
+        self.translate_title_author()
 
         self.chapter_list = self.get_all_pages()
         self.chapter_size = self.get_chapter_size()
@@ -57,8 +59,6 @@ class HjwzwCrawler(BasicCrawler):
             self.soup.find('h1').text.strip().replace('》', '').replace('《', '')
         )
 
-        return self.title
-
     def set_author(self):
         """Get the author of the book.
 
@@ -69,7 +69,6 @@ class HjwzwCrawler(BasicCrawler):
         self.author = self.soup.find(
             'a', title=re.compile(r"^作者:")
         ).text.strip()
-        return self.author
 
     def get_all_pages(self):
         """Get the all pages of the book.

@@ -42,7 +42,10 @@ class TtkanCrawler(BasicCrawler):
 
         self.soup = get_soup(url)
 
-        self.title, self.author = self.translate_title_author()
+        self.set_title()
+        self.set_author()
+        self.translate_title_author()
+
         self.chapter_list = self.get_all_pages()
         self.chapter_size = self.get_chapter_size()
         self.set_path()
@@ -64,8 +67,6 @@ class TtkanCrawler(BasicCrawler):
             .text.strip()
         )
 
-        return self.title
-
     def set_author(self):
         """Get the author of the book.
 
@@ -81,7 +82,6 @@ class TtkanCrawler(BasicCrawler):
             .text.strip()
             .replace('作者：', '')
         )
-        return self.author
 
     def get_all_pages(self):
         """Get the all pages of the book.

@@ -37,7 +37,9 @@ class UutwCrawler(BasicCrawler):
         self.base_url = "https://tw.uukanshu.com"
         self.soup = get_soup(url)
 
-        self.title, self.author = self.translate_title_author()
+        self.set_title()
+        self.set_author()
+        self.translate_title_author()
 
         self.chapter_list = self.get_all_pages()
         self.chapter_size = self.get_chapter_size()
@@ -55,8 +57,6 @@ class UutwCrawler(BasicCrawler):
 
         self.title = self.soup.find('h2', '').text.strip().split('作者：')[0]
 
-        return self.title
-
     def set_author(self):
         """Get the author of the book.
 
@@ -65,7 +65,6 @@ class UutwCrawler(BasicCrawler):
         """
 
         self.author = self.soup.find('h2', '').text.strip().split('作者：')[1]
-        return self.author
 
     def get_all_pages(self):
         """Get the all pages of the book.
