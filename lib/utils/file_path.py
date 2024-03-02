@@ -9,6 +9,8 @@ OUTPUT_PATH = Path(PROGRAM_PATH, 'output')
 ASSET_PATH = Path(PROGRAM_PATH, 'asset')
 CRAWLER_ROOT_PATH = Path(PROGRAM_PATH, 'lib', 'crawler')
 
+CRAWLER_HANDLER_PATH = Path(PROGRAM_PATH, 'lib', 'tools', 'crawler_handler.py')
+
 BOOKS_JSON_PATH = Path(ASSET_PATH, 'books.json')
 
 LOG_PATH.mkdir(parents=True, exist_ok=True)

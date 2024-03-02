@@ -91,6 +91,11 @@ def merge_chapter(path, title, author, intro, chapter_size):
         `chapter_size`: The size of the chapter.
     """
 
+    final_chapter_path = Path(path, "{}".format(chapter_size - 1))
+
+    with open(final_chapter_path, 'r', encoding='utf-8') as f:
+        final_chapter = f.readlines()[0].strip().replace("# ", "")
+
     with open(Path(path, "{}.txt".format(title)), 'w', encoding='utf-8') as f:
         f.write('書名: ' + title + '\n')
         f.write('作者: ' + author + '\n\n')
@@ -98,9 +103,12 @@ def merge_chapter(path, title, author, intro, chapter_size):
         for line in intro.splitlines():
             f.write('       ' + line.strip() + '\n')
         f.write('\n\n')
+        f.write("目前更新到: " + final_chapter + '\n\n\n\n')
 
     for i in range(chapter_size):
-        with open(Path(path, str(i)), 'r', encoding='utf-8') as f:
+
+        chapter_file = Path(path, str(i))
+        with open(chapter_file, 'r', encoding='utf-8') as f:
             lines = f.readlines()
 
         lines = translate_simp_to_trad(lines)
@@ -110,4 +118,4 @@ def merge_chapter(path, title, author, intro, chapter_size):
         ) as f:
             f.writelines(lines)
 
-    delete_chapter(path, chapter_size)
+        delete_file(chapter_file)

@@ -116,8 +116,27 @@ class ZhswxCrawler(BasicCrawler):
         else:
             chapter_name = '第{}章'.format(index)
 
-        if soup.find_all('td')[1].find_all('div')[8].text:
-            content = soup.find_all('td')[1].find_all('div')[8].text
+        if soup.find(
+            "div",
+            style=(
+                "font-size: 20px; line-height: 30px; word-wrap: break-word;"
+                " table-layout: fixed; word-break: break-all; width: 700px;"
+                " margin: 0 auto; text-indent: 2em; color: Black;"
+            ),
+        ).text:
+            content = (
+                soup.find(
+                    "div",
+                    style=(
+                        "font-size: 20px; line-height: 30px; word-wrap:"
+                        " break-word; table-layout: fixed; word-break:"
+                        " break-all; width: 700px; margin: 0 auto;"
+                        " text-indent: 2em; color: Black;"
+                    ),
+                )
+                .text.replace("手機用戶請訪問筆之趣味閣里閱讀！兒逼quger", "")
+                .replace("章節列表", "")
+            )
         else:
             content = '\n\n'
 

@@ -11,6 +11,7 @@ from lib.tools.json_handler import (
 from lib.tools.tools import (
     send_multiple_books,
     separate_message_for_telegram_limit,
+    get_support_websites,
 )
 import threading
 from lib.utils.logger import log
@@ -30,6 +31,12 @@ def multiple_download(bot, update):
     cid = bot.message.from_user.id
     for url in urls:
         master_handler(cid, url, bot)
+
+
+def support_website(bot, update):
+    support_website = get_support_websites()
+    support_website = '\n'.join(support_website)
+    bot.message.reply_text('支援的網站有:\n{}'.format(support_website))
 
 
 def redownload(bot, update):
@@ -88,7 +95,8 @@ def books(bot, update):
 
 def help(bot, update):
     bot.message.reply_text(
-        '/d 下載\n/resend 重新傳送\n/books 現有書單\n/redownload 重新下載已知所有網站來源的特定書本\n'
+        '/d 下載\n/md 下載多本書\n/resend 重新傳送\n/books 現有書單\n/redownload'
+        ' 重新下載已知所有網站來源的特定書本\n/support 支援的網站\n/help 幫助\n'
     )
 
 
@@ -111,6 +119,7 @@ updater = Updater(os.environ.get("tg_token"))
 updater.dispatcher.add_handler(CommandHandler('d', download))
 updater.dispatcher.add_handler(CommandHandler('md', multiple_download))
 updater.dispatcher.add_handler(CommandHandler('redownload', redownload))
+updater.dispatcher.add_handler(CommandHandler('support', support_website))
 updater.dispatcher.add_handler(CommandHandler('resend', resend))
 updater.dispatcher.add_handler(CommandHandler('help', help))
 updater.dispatcher.add_handler(CommandHandler('stop', stop))

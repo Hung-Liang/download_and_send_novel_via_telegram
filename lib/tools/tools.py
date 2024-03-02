@@ -1,10 +1,11 @@
 import json
 import os
-
+import re
 from pathlib import Path
 from time import sleep
 
 from lib.helper.telegram_helper import TelegramHelper
+from lib.utils.file_path import CRAWLER_HANDLER_PATH
 
 
 def load_json(path):
@@ -225,3 +226,16 @@ def separate_message_for_telegram_limit(bulk_message):
 
     messages.append(message)
     return messages
+
+
+def get_support_websites():
+    """Get the support websites.
+
+    Returns:
+        `support_websites`: The support websites.
+    """
+
+    code = CRAWLER_HANDLER_PATH.read_text()
+    urls = re.findall(r'url.startswith\(\'(https?://\S+)\'\)', code)
+
+    return urls
