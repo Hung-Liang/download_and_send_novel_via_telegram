@@ -1,13 +1,4 @@
-from lib.crawler import (
-    CzbooksCrawler,
-    HetubookCrawler,
-    HjwzwCrawler,
-    Novel543Crawler,
-    Supertime01Crawler,
-    TtkanCrawler,
-    UutwNetCrawler,
-    ZhswxCrawler,
-)
+import lib.crawler as all_crawlers
 from lib.utils.logger import log
 
 
@@ -24,35 +15,39 @@ def select_crawler(url: str):
     """
 
     if url.startswith('https://czbooks.net'):
-        crawler = CzbooksCrawler(url)
+        crawler = all_crawlers.CzbooksCrawler(url)
         website = "czbooks"
 
     elif url.startswith('https://www.hetubook.com'):
-        crawler = HetubookCrawler(url)
+        crawler = all_crawlers.HetubookCrawler(url)
         website = "hetubook"
 
     elif url.startswith('https://tw.hjwzw.com'):
-        crawler = HjwzwCrawler(url)
+        crawler = all_crawlers.HjwzwCrawler(url)
         website = "hjwzw"
 
     elif url.startswith('https://www.novel543.com'):
-        crawler = Novel543Crawler(url)
+        crawler = all_crawlers.Novel543Crawler(url)
         website = "novel543"
 
     elif url.startswith('https://br.supertime01.com'):
-        crawler = Supertime01Crawler(url)
+        crawler = all_crawlers.Supertime01Crawler(url)
         website = "supertime01"
 
+    elif url.startswith('https://www.timotxt.com'):
+        crawler = all_crawlers.TimotxtCrawler(url)
+        website = "timotxt"
+
     elif url.startswith('https://www.ttkan.co'):
-        crawler = TtkanCrawler(url)
+        crawler = all_crawlers.TtkanCrawler(url)
         website = "ttkan"
 
     elif url.startswith('https://tw.uukanshu.net'):
-        crawler = UutwNetCrawler(url)
+        crawler = all_crawlers.UutwNetCrawler(url)
         website = "uutw_net"
 
     elif url.startswith('https://tw.zhswx.com'):
-        crawler = ZhswxCrawler(url)
+        crawler = all_crawlers.ZhswxCrawler(url)
         website = "zhswx"
 
     else:
@@ -60,5 +55,7 @@ def select_crawler(url: str):
         website = None
 
     log('[select_crawler]', website, url)
+
+    print(url)
 
     return crawler, website

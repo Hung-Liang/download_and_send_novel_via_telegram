@@ -30,7 +30,11 @@ def multiple_download(bot, update):
     urls = bot.message['text'].replace('/md', '', 1).strip().split()
     cid = bot.message.from_user.id
     for url in urls:
-        master_handler(cid, url, bot)
+        try:
+            master_handler(cid, url, bot)
+        except Exception as e:
+            log('[main]', 'Multiple download error: ', e)
+            bot.message.reply_text('下載失敗: {}'.format(url))
 
 
 def support_website(bot, update):
