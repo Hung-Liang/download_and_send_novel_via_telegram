@@ -50,7 +50,11 @@ def get_websites(title):
 
     for book in books:
         if book == title:
-            return True, books[book]['websites']
+            return True, books[book]['websites'], book
+
+    for book in books:
+        if title in book:
+            return True, books[book]['websites'], book
 
     return False, None
 

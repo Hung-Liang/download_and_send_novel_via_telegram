@@ -47,19 +47,21 @@ def redownload(bot, update):
     book_name = bot.message['text'].replace('/redownload', '').strip()
     cid = bot.message.from_user.id
 
-    book_exist, websites = get_websites(book_name)
+    book_exist, websites, whole_name = get_websites(book_name)
 
     if not book_exist:
         bot.message.reply_text('書本不存在')
         return
     for website in websites:
 
-        url = get_url(book_name, website)
+        url = get_url(whole_name, website)
 
         try:
             master_handler(cid, url, bot, redownload=True)
         except Exception as e:
-            bot.message.reply_text('{}網站版本的{}下載失敗'.format(website, book_name))
+            bot.message.reply_text(
+                '{}網站版本的{}下載失敗'.format(website, whole_name)
+            )
             log('[main]', 'Redownload error: ', e)
 
 
@@ -70,13 +72,13 @@ def resend(bot, update):
     fid_list = []
 
     if book_name != '':
-        book_exist, websites = get_websites(book_name)
+        book_exist, websites, whole_name = get_websites(book_name)
         if not book_exist:
             bot.message.reply_text('書本不存在')
             return
 
         for website in websites:
-            fid = get_fid(book_name, website)
+            fid = get_fid(whole_name, website)
             fid_list.append(fid)
 
     else:
@@ -99,7 +101,8 @@ def books(bot, update):
 
 def help(bot, update):
     bot.message.reply_text(
-        '/d 下載\n/md 下載多本書\n/resend 重新傳送\n/books 現有書單\n/redownload'
+        '/d 下載\n/md 下載多本書\n/resend 重新傳送\n/books'
+        ' 現有書單\n/redownload'
         ' 重新下載已知所有網站來源的特定書本\n/support 支援的網站\n/help 幫助\n'
     )
 
