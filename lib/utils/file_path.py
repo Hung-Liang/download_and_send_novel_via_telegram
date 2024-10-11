@@ -8,6 +8,7 @@ LOG_PATH = Path(PROGRAM_PATH, 'log')
 OUTPUT_PATH = Path(PROGRAM_PATH, 'output')
 ASSET_PATH = Path(PROGRAM_PATH, 'asset')
 CRAWLER_ROOT_PATH = Path(PROGRAM_PATH, 'lib', 'crawler')
+TEMP_PATH = Path(PROGRAM_PATH, 'temp')
 
 CRAWLER_HANDLER_PATH = Path(PROGRAM_PATH, 'lib', 'tools', 'crawler_handler.py')
 
